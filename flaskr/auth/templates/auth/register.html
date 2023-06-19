@@ -1,0 +1,66 @@
+{% extends 'base_h100.html' %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+
+  <div class="row h-100 w-100 justify-content-center align-items-center">
+    <div class="col-12 col-md-7 col-lg-5 px-3">
+      <div class="my-container1 form-log-reg m-2 px-3 py-5">
+        <div class="w-75 mx-auto">
+
+          <div class="lead mb-4 fs-4"> Register </div>
+
+          <form method="post">
+            {# This hidden_tag is a CSRF security feature. #}
+            {{ form.hidden_tag() }}
+
+            <div class="form-floating">
+               {{ form.email(class="form-control",  type="email",id="floatingEmail",placeholder="email",required=False) }}
+              <label for="floatingEmail">{{ form.email.label }}</label>
+            </div>
+
+            {% for error in form.email.errors %} 
+              <p style="color:red">{{error}}</p>
+            {% endfor %}
+
+            <div class="form-floating">
+               {{ form.username(class="form-control",  type="username",id="floatingUsername",placeholder="username",required=False) }}
+              <label for="floatingEmail">{{ form.username.label }}</label>
+            </div>
+
+            {% for error in form.username.errors %} 
+              <p style="color:red">{{error}}</p>
+            {% endfor %}
+
+            <div class="form-floating">
+              {{ form.password(class="form-control", type="password",id="floatingPassword",placeholder="password",required=False) }}
+              <label for="floatingPassword">{{ form.password.label}}</label>
+            </div>
+
+            {% for error in form.password.errors %} 
+              <p style="color:red">{{error}}</p>
+            {% endfor %}
+
+            <div class="form-floating">
+              {{ form.pass_confirm(class="form-control", type="password",id="floatingPassConfirm",placeholder="password",required=False) }}
+              <label for="floatingPassConfirm">{{ form.pass_confirm.label}}</label>
+            </div>
+
+            {% for error in form.pass_confirm.errors %} 
+              <p style="color:red">{{error}}</p>
+            {% endfor %}
+
+            <div class="pt-3">
+            {{ form.submit(class="btn my-button fs-5 w-100") }}
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+{% endblock %}

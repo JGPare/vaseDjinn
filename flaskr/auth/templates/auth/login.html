@@ -1,0 +1,39 @@
+{% extends 'base_h100.html' %}
+
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+
+  <div class="row h-100 w-100 justify-content-center align-items-center">
+    <div class="col-12 col-md-7 col-lg-5 px-3">
+      <div class="my-container1 form-log-reg m-2 px-3 py-5">
+        <div class="w-75 mx-auto">
+
+          <div class="lead mb-4 fs-4"> Please Sign In</div>
+
+          <form method="post">
+            {# This hidden_tag is a CSRF security feature. #}
+            {{ form.hidden_tag() }}
+           
+            <div class="form-floating">
+               {{ form.email(class="form-control",  type="email",id="floatingEmail",placeholder="email",) }}
+              <label for="floatingEmail">{{ form.email.label }}</label>
+            </div>
+
+            <div class="form-floating">
+             {{ form.password(class="form-control", type="password",id="floatingPassword",placeholder="password") }}
+             <label for="floatingPassword">{{ form.password.label}}</label>
+            </div>
+            
+            <div class="pt-3">
+            {{ form.submit(class="btn my-button fs-5 w-100") }}
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
