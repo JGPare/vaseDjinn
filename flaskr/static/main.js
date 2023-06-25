@@ -451,6 +451,8 @@ function load(name="") {
         console.log('loaded vase');
         var [vaseData,appearance] = JSON.parse(data)
         createTables(vaseData);
+        removeMesh();
+        addMesh();
     }).fail(function(data) {
       // Optionally alert the user of an error here...
     });
