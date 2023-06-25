@@ -95,6 +95,7 @@ def load():
             gen(vase_data)
     else:
         vase_data = default_vase()
+        gen(vase_data)
         appearance = ""
 
     return json.dumps([vase_data,appearance])
