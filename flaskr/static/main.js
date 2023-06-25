@@ -95,7 +95,7 @@ function createTables(data) {
     var generic0HeadersData = ["height","width","thickness"];
 
     var table = document.createElement("TABLE");  //makes a table element for the page
-    table.setAttribute("class","table table-dark table-hover my-dark-table");
+    table.setAttribute("class","table table-dark table-hover my-dark-table text-center");
     table.setAttribute("id","generic0-table");
     table.setAttribute("data","generic");
     
@@ -137,7 +137,7 @@ function createTables(data) {
     var generic1HeadersData = ["vertical_steps","radial_steps","slope"];
 
     var table = document.createElement("TABLE");  //makes a table element for the page
-    table.setAttribute("class","table table-dark table-hover my-dark-table");
+    table.setAttribute("class","table table-dark table-hover my-dark-table text-center");
     table.setAttribute("id","generic1-table");
     table.setAttribute("data","generic");
 
@@ -177,11 +177,11 @@ function createTables(data) {
     generic1Container.appendChild(table);
 
 // radial table
-    var radialHeaders = ["mod", "mag", "freq", "twist", "phase"];
+    var radialHeaders = ["mod", "amount", "freq", "twist", "phase"];
     var radialHeadersData = ["mod", "mag", "freq", "twist", "phase"];
 
     var table = document.createElement("TABLE");
-    table.setAttribute("class","table table-dark table-hover my-dark-table");
+    table.setAttribute("class","table table-dark table-hover my-dark-table text-center");
     table.setAttribute("id","radial-table")
     table.setAttribute("data","radial");
 
@@ -233,10 +233,10 @@ function createTables(data) {
     radialContainer.appendChild(table);
 
  // vertical table
-    var verticalHeaders = ["mod", "mag", "freq", "phase"];
+    var verticalHeaders = ["mod", "amount", "freq", "phase"];
     var verticalHeadersData = ["mod", "mag", "freq", "phase"];
     var table = document.createElement("TABLE");  //makes a table element for the page
-    table.setAttribute("class","table table-dark table-hover my-dark-table");
+    table.setAttribute("class","table table-dark table-hover my-dark-table text-center");
     table.setAttribute("id","vertical-table")
     table.setAttribute("data","vertical");
     
@@ -292,7 +292,7 @@ function createIndexList(indexList,offsetDir=0){
     }
 
     var table = document.createElement("TABLE");
-    table.setAttribute("class","table table-dark table-hover my-dark-table");
+    table.setAttribute("class","table table-dark table-hover my-dark-table text-center");
     table.setAttribute("id","index-table");
     table.setAttribute("data","index");
 
