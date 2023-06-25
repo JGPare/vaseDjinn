@@ -12,7 +12,6 @@ window.onload = init;
 
 function init(){
     loadSettings()
-    load()
 }
 
 import {removeMesh,addMesh,getApperance,setApperance} from './visualizer.js';
@@ -432,6 +431,7 @@ function loadSettings() {
     }).done(function(data) {
       console.log('loaded settings:');
       settings = JSON.parse(data);
+      load()
       // console.log(settings);
     }).fail(function(data) {
       // Optionally alert the user of an error here...
