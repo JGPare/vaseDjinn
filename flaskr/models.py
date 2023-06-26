@@ -15,11 +15,13 @@ class User(db.Model,UserMixin):
     username = db.Column(db.String(64),unique=True,index=True)
     password_hash = db.Column(db.String(128))
     vases = db.relationship('Vase', backref='creator', lazy=True, cascade="all, delete")
+    admin = db.Column(db.Integer)
 
-    def __init__(self,email,username,password):
+    def __init__(self,email,username,password,admin=0):
         self.username = username
         self.email = email
         self.password_hash = generate_password_hash(password)
+        self.admin = admin
 
     def check_password(self,password):
         return check_password_hash(self.password_hash,password)
@@ -33,19 +35,31 @@ class Vase(db.Model):
     __tablename__ = 'vases'
 
     id = db.Column(db.Integer,primary_key= True)
-    name = db.Column(db.Text,unique=True,index=True)
+    unique_name = db.Column(db.Text,unique=True,index=True)
+    name = db.Column(db.Text)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     
     data = db.Column(db.String(512))
     appearance = db.Column(db.String(512))
+    public = db.Column(db.Integer,index=True)
 
-    def __init__(self,user_id,name,data,appearance):
+    def __init__(self,user_id,name,data,appearance,public=0):
         self.user_id = user_id
         self.name = name
         self.data = data
         self.appearance = appearance
+        self.public = public
+        self.unique_name = f"{user_id}-{name}"
 
     def __repr__(self):
         return f"Vase: {self.name}"
+
+    def set_access(self,access):
+        if access == "public":
+            self.public = 1
+        elif access == "private":
+            self.public = 0
+
+
 

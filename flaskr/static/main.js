@@ -31,7 +31,8 @@ function createRange(name,value=50,min=0,max=100,step=1) {
 
 function readAllTables(){
     var vaseObj = {};
-    vaseObj["name"] = $("#inputName").val()
+    vaseObj["name"] = $("#inputName").val();
+    vaseObj["access"] = $("#inputAccess").val();
     vaseObj["generic0"] = readTable("generic0-table")[0];
     vaseObj["generic1"] = readTable("generic1-table")[0];
     vaseObj["radial"] = readTable("radial-table");
@@ -41,11 +42,13 @@ function readAllTables(){
 }
 
 function setAllTables(vaseData){
-    $("#inputName").val(vaseData["name"]);
+    
     setTable("generic0-table",[vaseData["generic0"]]);
     setTable("generic1-table",[vaseData["generic1"]]);
     setTable("radial-table",vaseData["radial"]);
     setTable("vertical-table",vaseData["vertical"]);
+    console.log("set name",vaseData["name"]);
+    $("#inputName").val(vaseData["name"]);
 
 }
 
@@ -291,7 +294,7 @@ function createIndexList(indexList,offsetDir=0){
     }
 
     var table = document.createElement("TABLE");
-    table.setAttribute("class","table table-dark table-hover my-dark-table text-center");
+    table.setAttribute("class","table table-dark table-hover my-dark-table");
     table.setAttribute("id","index-table");
     table.setAttribute("data","index");
 
@@ -320,10 +323,23 @@ function createIndexList(indexList,offsetDir=0){
        
         var row = table.insertRow(i);
         var button = $("<a></a>");
-        button.attr("data",indexList[i+startRow]);
+        var name = $("<p></p>");
+        var user = $("<p></p>");
 
-        button.attr("class","btn vaseLoader text-light h-100 w-100");
-        button.text(indexList[i+startRow]);
+        name.attr("class","text-start mb-0");
+        user.attr("class","text-end mb-0 text-secondary");
+
+        name.text(indexList[i+startRow].name);
+        user.text("creator: "+indexList[i+startRow].user);
+
+        button.attr("data",JSON.stringify(indexList[i+startRow]));
+        name.attr("data",JSON.stringify(indexList[i+startRow]));
+        user.attr("data",JSON.stringify(indexList[i+startRow]));
+
+        button.attr("class","btn vaseLoader d-flex justify-content-between text-light h-100 w-100");
+        button.attr("id","vaseLoader");
+        button.append(name);
+        button.append(user);
         row.insertCell(0).appendChild(button[0]); 
     };
 
@@ -348,13 +364,11 @@ function createIndexList(indexList,offsetDir=0){
 }
 
 // button actions 
-
-$(document).on("click",'.vaseLoader' ,function(event) {
+$(document).on("click",'#vaseLoader' ,function(event) {
     console.log("load from index attempt",);
     event.stopPropagation();
     event.stopImmediatePropagation();
-    // console.log();
-    const data = event.target.getAttribute("data")
+    var data = event.target.getAttribute("data");
     reload(data);
 });
 
@@ -365,6 +379,14 @@ $( "#load-vase" ).on( "click", function(event) {
     getIndex();
     $("#myForm").toggle();
     $("#index-outer-container").toggle();
+
+});
+
+$(document).on("change","#input-load-access",function(event) {
+    console.log("select change");
+    event.stopPropagation();
+    $("#index-table").remove();
+    getIndex();
 });
 
 $( "#edit-vase" ).on( "click", function(event) {
@@ -394,7 +416,6 @@ $(document).on("click",'#up-arrow-button' ,function(event) {
     createIndexList(indexList,-1);
 });
 
-
 // AJAX FUNCTIONS //
 
 // save function
@@ -418,6 +439,7 @@ $('#myForm').submit(function(event) {
       // Optionally alert the user of an error here...
     });
 });
+
 
 // contentType: "application/json; charset=utf-8",
 // traditional: true,
@@ -451,8 +473,6 @@ function load(name="") {
         console.log('loaded vase');
         var [vaseData,appearance] = JSON.parse(data)
         createTables(vaseData);
-        removeMesh();
-        addMesh();
     }).fail(function(data) {
       // Optionally alert the user of an error here...
     });
@@ -460,13 +480,17 @@ function load(name="") {
 
 function getIndex(){
     console.log('load index attempt');
+    var access = $("#input-load-access").val();
     $.ajax({
         type: "POST",
         url: "getIndex",
-        data: "",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        data: JSON.stringify(access),
     }).done(function(data) {
         console.log('indexes got');
         indexList = JSON.parse(data);
+        console.log(indexList);
         createIndexList(indexList);
     }).fail(function(data) {
       // Optionally alert the user of an error here...
@@ -474,21 +498,21 @@ function getIndex(){
 }
 
 // load function
-function reload(name="") {
+function reload(inputData="") {
     console.log('reload attempt');
     $.ajax({
         type: "POST",
         url: "loadVase",
         contentType: "application/json; charset=utf-8",
         traditional: true,
-        data: JSON.stringify(name),
+        data: inputData,
     }).done(function(data) {
         console.log('reloaded vase');
         var [vaseData,appearance] = JSON.parse(data);
         vaseData = JSON.parse(vaseData);
         appearance = JSON.parse(appearance);
         setApperance(appearance);
-        vaseData["name"] = name;
+        vaseData["name"] = JSON.parse(inputData).name;
         setAllTables(vaseData);
         removeMesh();
         addMesh();

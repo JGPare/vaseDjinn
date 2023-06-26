@@ -13,7 +13,9 @@ home_bp = Blueprint('home', __name__,template_folder='templates')
 
 @home_bp.route('/', methods=['GET', 'POST'])
 def home():
-    flash("log in to save and load vases")
+    if not current_user.is_authenticated:
+        flash("log in to save and load vases")
+    gen(default_vase())
     return render_template('home.html')
 
 @home_bp.route('/saveVase', methods=['GET', 'POST'])
@@ -24,7 +26,7 @@ def save():
     # pop the name and apperance out
     name = vase_data.pop("name")
     appearance = vase_data.pop("appearance")
-    print(appearance)
+    access = vase_data.pop("access")
     # loop to convert content to ints
     for key in vase_data.keys():
         value = vase_data[key]
@@ -44,10 +46,9 @@ def save():
             name=name)).all()
         if vase:
             print("vase updated:")
-            print(vase_data)
-            print(appearance)
             vase[0].data = json.dumps(vase_data)
             vase[0].appearance = json.dumps(appearance)
+            vase[0].set_access(access)
             db.session.commit()
         else:
             print("new vase")
@@ -56,6 +57,7 @@ def save():
                 name = name,
                 data = json.dumps(vase_data),
                 appearance = json.dumps(appearance))
+            vase_mdl.set_access(access)
             db.session.add(vase_mdl)
             db.session.commit()
     
@@ -63,22 +65,34 @@ def save():
 
 @home_bp.route('/getIndex', methods=['GET', 'POST'])
 def get_index():
+    access = request.get_json()
     if current_user.is_authenticated:
-        vases = db.session.scalars(db.select(Vase).filter_by(user_id =current_user.id)).all()
-        names = [elem.name for elem in vases]
+    # access = request.get_json()
+        if access == "private":
+            vases = db.session.scalars(db.select(Vase).filter_by(user_id =current_user.id)).all()
+            data = [{"name" : elem.name,"user":current_user.username} \
+                for elem in vases]
+        elif access == "public":
+            users = db.session.scalars(db.select(User)).all()
+            id_name_dict = {elem.id : elem.username for elem in users}
+            vases = db.session.scalars(db.select(Vase).filter_by(public = 1)).all()
+            data = [{"name" : elem.name,"user":id_name_dict[elem.user_id]} \
+                for elem in vases]
+        return json.dumps(data)
     else:
-        systems = None
-    return json.dumps(names)
+        return json.dumps({"status" : "BAD"})
 
 @home_bp.route('/loadVase', methods=['GET', 'POST'])
 def load():
 
-    name = request.get_json()
+    data = request.get_json()
 
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and data != "":
+        user_id = db.session.scalars(db.select(User).filter_by(
+            username = data["user"])).all()[0].id
         vase = db.session.scalars(db.select(Vase).filter_by(
-            user_id = current_user.id,
-            name=name)).all()
+            user_id = user_id,
+            name = data["name"])).all()
         if vase:
             vase_data =  vase[0].data
             appearance = vase[0].appearance
@@ -95,7 +109,6 @@ def load():
             gen(vase_data)
     else:
         vase_data = default_vase()
-        gen(vase_data)
         appearance = ""
 
     return json.dumps([vase_data,appearance])

@@ -95,8 +95,34 @@
         <div class="container my-container1 pt-1 pb-2">
           <form action="saveVase" id='myForm' method="post">
 
+<!-- Will be new head of menu once access settings are added!!! -->
+ 
+          <div class="container-fluid table-container my-2 py-2">
+            <table class="table table-dark table-hover my-dark-table" id="name-table" data="name">
+              <thead>
+                <tr>
+                  <td data="name" class="fs-5">name</td>
+                  <td data="access" class="fs-5">access</td>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <input type="text" name="name" class="form-control dark-input" id="inputName" placeholder="name" value="GregTheVase">
+                  </td>
+                  <td>
+                    <select type="select" name="access" class="form-select select-size2" id="inputAccess">
+                      <option selected>private</option>
+                      <option>public</option>
+                    </select>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <div class="container-fluid table-container p-2 pb-2 my-2">
+        
+          <!-- <div class="container-fluid table-container p-2 pb-2 my-2">
             <div class="row">
               <div class="col-2 name-label-container" >
                 <label for="inputName" class="text-light pt-4 ps-2 h-100">name</label>
@@ -105,7 +131,7 @@
                 <input type="text" name="name" class="form-control dark-input" id="inputName" placeholder="name" value="GregTheVase">
               </div>
             </div>
-          </div>
+         </div> -->
 
 <!-- HEIGHT WIDTH THICKNESS TABLE -->
           <div class="container-fluid table-container my-2 mt-3" id="generic0-container"></div>
@@ -142,6 +168,10 @@
           <div class="container-fluid p-1" id="index-outer-container" style="display: none">
             <div class="container-fluid text-center text-light">
               <h4>Load a vase</h4>
+              <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access">
+                <option selected>private</option>
+                <option>public</option>
+              </select>
             
             <div class="container-fluid table-container mx-auto" id="index-container">
 

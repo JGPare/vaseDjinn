@@ -25,6 +25,11 @@ h1{
   color: #fca311;
 }
 
+#bootstrap-overrides select{
+  background-color: #ced4da;
+  height: 2.5rem;
+}
+
 .my-container1{
   border-radius: 1rem;
   /*  dard mode*/
@@ -91,8 +96,10 @@ h1{
 
 .dark-input{
   border: 1px solid #39393a;
-  background-color: #39393a;
-  color : #ced4da;
+/*  background-color: #39393a;*/
+  background-color: #ced4da;
+  height: 2.5rem;
+  font-size: 1.2rem;
 }
 
 .my-range::-webkit-slider-thumb {
