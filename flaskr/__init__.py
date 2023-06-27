@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_login import LoginManager
 from dotenv import load_dotenv
+from flask_talisman import Talisman
 
 ###############################################################################
 ############################# INITIATE EXTENSIONS #############################
@@ -20,6 +21,7 @@ def create_app(app_config=None):
 
     # Often people will also separate these into a separate config.py file 
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
+    app.config["PREFERRED_URL_SCHEME"] = "https"
 
 ###############################################################################
 ############################### DATABASE SETUPS ###############################
@@ -39,6 +41,7 @@ def create_app(app_config=None):
 
     db.init_app(app)
     Migrate(app,db)
+    Talisman(app,content_security_policy=None)
 
 ###############################################################################
 ################################ LOGIN CONFIGS ################################
