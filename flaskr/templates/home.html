@@ -202,8 +202,8 @@
 </body>
 
 <script>
-  var stl_path = {{ url_for("static",filename= '/stl/surf.stl')|tojson }};
-  stl_path = window.location.href + stl_path;
+  const stl_path = "/static/stl/surf.stl"
+  // stl_path = window.location.href + stl_path;
   console.log(stl_path)
   var downArrow = {{ url_for("static",filename= 'caret-down-solid.svg')|tojson}};
   var upArrow = {{ url_for("static",filename= 'caret-up-solid.svg')|tojson}};
