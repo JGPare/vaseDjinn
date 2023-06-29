@@ -44,7 +44,7 @@ export function getApperance(){
     return vaseMesh.material.color.getHex();
 }
 
-export function addMesh(file=""){
+export function addMesh(){
     const loader = new STLLoader();
     console.log(stl_path);
     loader.load( stl_path, function ( geometry ) {

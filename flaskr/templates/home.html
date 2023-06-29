@@ -202,9 +202,8 @@
 </body>
 
 <script>
-  const stl_path = "/static/stl/surf.stl"
-  // stl_path = window.location.href + stl_path;
-  console.log(stl_path)
+  var default_path = "/static/stl/default.stl";
+  var stl_path = default_path;
   var downArrow = {{ url_for("static",filename= 'caret-down-solid.svg')|tojson}};
   var upArrow = {{ url_for("static",filename= 'caret-up-solid.svg')|tojson}};
 </script>

@@ -2,6 +2,7 @@ import numpy as np
 from stl import mesh, Mode, main
 import os
 import tempfile
+import time
 
 settings = {
     "width" : {
@@ -232,8 +233,11 @@ def gen(vase_data):
     surf1 = mesh.Mesh(np.zeros(s_.shape[0], dtype=mesh.Mesh.dtype))
     surf1.vectors = s_
 
-    display_filename = 'flaskr/static/stl/surf.stl'
+    path = f"/static/stl/v{int(time.time()*1000)}.stl"
+    display_filename = "flaskr" + path
     surf1.save(display_filename)
+
+    return path
 
     # surf1.save(display_filename,mode=Mode.ASCII)
     # file = open(display_filename,"r")

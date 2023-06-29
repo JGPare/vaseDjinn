@@ -8,6 +8,7 @@ from flaskr.models import User,Vase
 # from flaskr.auth.forms import RegistrationForm, LoginForm
 
 from .stl_generate import gen,settings
+import os
 
 home_bp = Blueprint('home', __name__,template_folder='templates')
 
@@ -15,7 +16,6 @@ home_bp = Blueprint('home', __name__,template_folder='templates')
 def home():
     if not current_user.is_authenticated:
         flash("log in to save and load vases")
-    gen(default_vase())
     return render_template('home.html')
 
 @home_bp.route('/saveVase', methods=['GET', 'POST'])
@@ -37,8 +37,10 @@ def save():
         else:
             for subkey in value.keys():
                 value[subkey] = int(value[subkey])
-    
-    gen(vase_data)
+    try:
+        path = gen(vase_data)
+    except:
+        path = "/static/stl/default.stl"
 
     if current_user.is_authenticated:
         vase = db.session.scalars(db.select(Vase).filter_by(
@@ -61,7 +63,7 @@ def save():
             db.session.add(vase_mdl)
             db.session.commit()
     
-    return json.dumps({'status':'OK'})
+    return json.dumps(path)
 
 @home_bp.route('/getIndex', methods=['GET', 'POST'])
 def get_index():
@@ -101,17 +103,18 @@ def load():
             print(vase[0])
             print("Vase appearance",appearance)
 
-            gen(json.loads(vase_data))
+            path = gen(json.loads(vase_data))
         else:
             print("default vase loaded")
             vase_data = default_vase()
             appearance = ""
-            gen(vase_data)
+            path = gen(vase_data)
     else:
         vase_data = default_vase()
+        path = gen(vase_data)
         appearance = ""
 
-    return json.dumps([vase_data,appearance])
+    return json.dumps([vase_data,appearance,path])
 
 @home_bp.route('/deleteVase', methods=['GET', 'POST'])
 def delete():
@@ -134,6 +137,16 @@ def delete():
     gen(vase_data)
 
     return json.dumps(vase_data)
+
+
+@home_bp.route('/deleteFile', methods=['GET', 'POST'])
+def delete_file():
+
+    path = "flaskr" + request.get_json()
+    print(path)
+    os.remove(path)
+
+    return json.dumps({"status" : "OK"})
 
 @home_bp.route('/loadSettings', methods=['GET', 'POST'])
 def load_settings():

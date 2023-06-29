@@ -416,6 +416,12 @@ $(document).on("click",'#up-arrow-button' ,function(event) {
     createIndexList(indexList,-1);
 });
 
+window.onbeforeunload = closingCode;
+function closingCode(){
+   deleteFile(stl_path);
+   return null;
+}
+
 // AJAX FUNCTIONS //
 
 // save function
@@ -432,9 +438,12 @@ $('#myForm').submit(function(event) {
       traditional: true,
       data: JSON.stringify(data),
     }).done(function(data) {
+      const old_path = stl_path;
+      stl_path = JSON.parse(data);
       console.log('submitted');
       removeMesh();
       addMesh();
+      deleteFile(old_path);
     }).fail(function(data) {
       // Optionally alert the user of an error here...
     });
@@ -471,7 +480,9 @@ function load(name="") {
         data: JSON.stringify(""),
     }).done(function(data) {
         console.log('loaded vase');
-        var [vaseData,appearance] = JSON.parse(data)
+        var [vaseData,appearance,path] = JSON.parse(data)
+        stl_path = path;
+        vaseData = vaseData;
         createTables(vaseData);
     }).fail(function(data) {
       // Optionally alert the user of an error here...
@@ -508,7 +519,10 @@ function reload(inputData="") {
         data: inputData,
     }).done(function(data) {
         console.log('reloaded vase');
-        var [vaseData,appearance] = JSON.parse(data);
+        var [vaseData,appearance,path] = JSON.parse(data);
+        console.log("pre-parse reload path",path);
+        const old_path = stl_path;
+        stl_path = path;
         vaseData = JSON.parse(vaseData);
         appearance = JSON.parse(appearance);
         setApperance(appearance);
@@ -516,6 +530,7 @@ function reload(inputData="") {
         setAllTables(vaseData);
         removeMesh();
         addMesh();
+        deleteFile(old_path);
     }).fail(function(data) {
       // Optionally alert the user of an error here...
     });
@@ -538,10 +553,26 @@ function deleteVase(name="") {
         vaseData["name"] = name;
         setAllTables(vaseData);
         removeMesh();
+        stl_path = default_path;
         addMesh();
     }).fail(function(data) {
       // Optionally alert the user of an error here...
     });
 };
 
+// delete function
+function deleteFile(path="") {
+    console.log('reload attempt');
+    $.ajax({
+        type: "POST",
+        url: "deleteFile",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        data: JSON.stringify(path),
+    }).done(function(data) {
+        console.log('delete file');
+    }).fail(function(data) {
+      // Optionally alert the user of an error here...
+    });
+};
 
