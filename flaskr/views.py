@@ -82,7 +82,7 @@ def get_index():
                 for elem in vases]
         return json.dumps(data)
     else:
-        return json.dumps({"status" : "BAD"})
+        return json.dumps({"status" : "Forbidden"})
 
 @home_bp.route('/loadVase', methods=['GET', 'POST'])
 def load():
@@ -133,6 +133,7 @@ def delete():
             print("no vase found")
     else:
         print("user not logged in")
+
     vase_data = default_vase()
     gen(vase_data)
 
@@ -142,11 +143,14 @@ def delete():
 @home_bp.route('/deleteFile', methods=['GET', 'POST'])
 def delete_file():
 
-    path = "flaskr" + request.get_json()
-    print(path)
-    os.remove(path)
+    try:
+        path = "flaskr" + request.get_json()
+        if path != "flaskr/static/stl/default.stl":
+            os.remove(path)
 
-    return json.dumps({"status" : "OK"})
+        return json.dumps({"status" : "OK"})
+    except:
+        return json.dumps({"status" : "Conflict"})
 
 @home_bp.route('/loadSettings', methods=['GET', 'POST'])
 def load_settings():
