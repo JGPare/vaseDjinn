@@ -6,7 +6,7 @@ var tablesMade = false;
 // index table
 var indexList;
 var startRow = 0;
-var displayNum = 12;
+var displayNum = 11;
 
 window.onload = init;
 
@@ -379,7 +379,6 @@ $( "#load-vase" ).on( "click", function(event) {
     getIndex();
     $("#myForm").toggle();
     $("#index-outer-container").toggle();
-
 });
 
 $(document).on("change","#input-load-access",function(event) {
