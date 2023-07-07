@@ -21,6 +21,8 @@ let params;
 
 let rotationSpeed = 0.8;
 
+let scale = 0.02;
+
 const exporter = new STLExporter();
 
 const exportStlParams = {
@@ -54,7 +56,7 @@ export function addMesh(){
 
         vaseMesh.position.set( 0, 0, 0 );
         vaseMesh.rotation.set(0,0,0);
-        vaseMesh.scale.set( 0.02, 0.02, 0.02 );
+        vaseMesh.scale.set( scale, scale, scale );
         vaseMesh.rotation.x = -Math.PI / 2;
 
         vaseMesh.castShadow = true;
@@ -69,7 +71,6 @@ export function addMesh(){
 function init() {
 
     container = document.getElementById('mycanvas');
-    mynav = document.getElementById('mynav');
 
     WIDTH = container.offsetWidth;
     HEIGHT = window.innerHeight;
@@ -96,8 +97,7 @@ function init() {
     grid.material.transparent = true;
     scene.add( grid );
 
-
-    // ASCII file
+    // add inital mesh 
     addMesh()
 
     // Lights
@@ -107,13 +107,11 @@ function init() {
     addShadowedLight( 1, 1, 1, 0xffffff, 1 );
     addShadowedLight( 0, 1, 1, 0x90e0ef, 1 );
     addShadowedLight( 1, 1, 0, 0xf72585, 1 );
-    // addShadowedLight( 0.5, 1, - 1, 0xf72585, 1 );
+    
     // renderer
-
     renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( WIDTH, HEIGHT );
-
     renderer.shadowMap.enabled = true;
 
     container.appendChild( renderer.domElement );
@@ -122,8 +120,6 @@ function init() {
 
     // stats = new Stats();
     // container.appendChild( stats.dom );
-
-    //
 
     // orbit controls
 
@@ -172,14 +168,24 @@ function init() {
 
 function exportASCII() {
 
-    const result = exporter.parse( vaseMesh );
+    const tempMesh = new THREE.Mesh( vaseMesh.geometry, vaseMesh.material );
+
+    tempMesh.scale.set( 1/scale, 1/scale, 1/scale );
+    tempMesh.rotation.x = Math.PI / 2;
+
+    const result = exporter.parse( tempMesh );
     saveString( result, $("#inputName").val()+'.stl' );
 
 }
 
 function exportBinary() {
 
-    const result = exporter.parse( vaseMesh, { binary: true } );
+    const tempMesh = new THREE.Mesh( vaseMesh.geometry, vaseMesh.material );
+
+    tempMesh.scale.set( 1/scale, 1/scale, 1/scale );
+    tempMesh.rotation.x = Math.PI / 2;
+
+    const result = exporter.parse( tempMesh, { binary: true } );
     saveArrayBuffer( result, $("#inputName").val()+'.stl' );
 
 }
@@ -232,7 +238,6 @@ function addShadowedLight( x, y, z, color, intensity ) {
 function onWindowResize() {
 
     container = document.getElementById('mycanvas');
-    mynav = document.getElementById('mynav');
 
     WIDTH = container.offsetWidth;
     HEIGHT = window.innerHeight;
