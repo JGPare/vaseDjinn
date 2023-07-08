@@ -26,7 +26,10 @@ def save():
     # pop the name and apperance out
     name = vase_data.pop("name")
     appearance = vase_data.pop("appearance")
-    access = vase_data.pop("access")
+    if "access" in vase_data.keys():
+        access = vase_data.pop("access")
+    else:
+        access = "private"
     # loop to convert content to ints
     for key in vase_data.keys():
         value = vase_data[key]
@@ -82,14 +85,19 @@ def get_index():
                 for elem in vases]
         return json.dumps(data)
     else:
-        return json.dumps({"status" : "Forbidden"})
+        users = db.session.scalars(db.select(User)).all()
+        id_name_dict = {elem.id : elem.username for elem in users}
+        vases = db.session.scalars(db.select(Vase).filter_by(public = 1)).all()
+        data = [{"name" : elem.name,"user":id_name_dict[elem.user_id]} \
+            for elem in vases]
+        return json.dumps(data)
 
 @home_bp.route('/loadVase', methods=['GET', 'POST'])
 def load():
 
     data = request.get_json()
 
-    if current_user.is_authenticated and data != "":
+    if data != "":
         user_id = db.session.scalars(db.select(User).filter_by(
             username = data["user"])).all()[0].id
         vase = db.session.scalars(db.select(Vase).filter_by(
@@ -113,6 +121,7 @@ def load():
         vase_data = default_vase()
         path = gen(vase_data)
         appearance = ""
+        vase_data = json.dumps(vase_data) # Stringigy vase data
 
     return json.dumps([vase_data,appearance,path])
 

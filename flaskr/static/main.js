@@ -12,7 +12,6 @@ window.onload = init;
 
 function init(){
     loadSettings();
-    loadDefault();
 }
 
 import {removeMesh,addMesh,getApperance,setApperance} from './visualizer.js';
@@ -462,6 +461,7 @@ function loadSettings() {
     }).done(function(data) {
       console.log('loaded settings');
       settings = JSON.parse(data);
+      loadDefault();
       // console.log(settings);
     }).fail(function(data) {
       console.log('failed to load settings');
@@ -481,7 +481,7 @@ function loadDefault(name="") {
         console.log('loaded default vase');
         var [vaseData,appearance,path] = JSON.parse(data)
         stl_path = path;
-        vaseData = vaseData;
+        vaseData = JSON.parse(vaseData);
         createTables(vaseData);
     }).fail(function(data) {
       console.log('failed to load default');
@@ -518,7 +518,7 @@ function load(inputData="") {
     }).done(function(data) {
         console.log('loaded vase');
         var [vaseData,appearance,path] = JSON.parse(data);
-        console.log("pre-parse load path",path);
+        // console.log("pre-parse load path",path);
         const old_path = stl_path;
         stl_path = path;
         vaseData = JSON.parse(vaseData);

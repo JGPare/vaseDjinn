@@ -102,7 +102,11 @@
               <thead>
                 <tr>
                   <td data="name" class="fs-5">name</td>
+                  {% if current_user.is_authenticated %}
                   <td data="access" class="fs-5">access</td>
+                  {% else %}
+                  <td hidden data="access" class="fs-5">access</td>
+                  {% endif %}
                 </tr>
               </thead>
               <tbody>
@@ -110,11 +114,18 @@
                   <td>
                     <input type="text" name="name" class="form-control dark-input" id="inputName" placeholder="name" value="GregTheVase">
                   </td>
+                  {% if current_user.is_authenticated %}
                   <td>
-                    <select type="select" name="access" class="form-select select-size2" id="inputAccess">
+                    <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access">
                       <option selected>private</option>
                       <option>public</option>
-                    </select>
+                  </td>
+                      {% else %}
+                  <td hidden>
+                    <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access"  title="login to save vases!" disabled>
+                      <option selected>public</option>
+                      <option>private</option>
+                      {% endif %}
                   </td>
                 </tr>
               </tbody>
@@ -156,7 +167,12 @@
                 <a class="btn my-button w-100" role="button" id="load-vase" href="">load</a>
               </div> 
               {% else %}
-             <input type="submit" class="btn my-button w-100" role="button" id="save-vase" value="update" form="myForm" title="Updates current model">
+              <div class="col-6">
+                <input type="submit" class="btn my-button w-100" role="button" id="save-vase" value="update" form="myForm" title="Updates current model">
+              </div>
+              <div class="col-6">
+                <a class="btn my-button w-100" role="button" id="load-vase" href="">load</a>
+              </div> 
               {% endif %}
             
             </div>
@@ -168,9 +184,16 @@
           <div class="container-fluid p-1" id="index-outer-container" style="display: none">
             <div class="container-fluid text-center text-light">
               <h4>Load a vase</h4>
+              {% if current_user.is_authenticated %}
               <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access">
                 <option selected>private</option>
                 <option>public</option>
+                {% else %}
+              <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access" disabled title="login to save private vases!">
+                <option selected>public</option>
+                <option>private</option>
+                {% endif %}
+                
               </select>
             
             <div class="container-fluid table-container mx-auto" id="index-container">
