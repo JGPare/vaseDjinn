@@ -34,7 +34,7 @@ init();
 animate();
 
 export function removeMesh(){
-    scene.remove(vaseMesh)
+    scene.remove(vaseMesh);
 }
 
 export function setApperance(color){
@@ -48,7 +48,6 @@ export function getApperance(){
 
 export function addMesh(){
     const loader = new STLLoader();
-    console.log(stl_path);
     loader.load( stl_path, function ( geometry ) {
 
         const material = new THREE.MeshPhongMaterial( { color: vaseColor, specular: 0x494949, shininess: 100 } );

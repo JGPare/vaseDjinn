@@ -112,7 +112,7 @@
               <tbody>
                 <tr>
                   <td>
-                    <input type="text" name="name" class="form-control dark-input" id="inputName" placeholder="name" value="GregTheVase">
+                    <input type="text" name="name" class="form-control dark-input" id="input-name" placeholder="name" value="GregTheVase">
                   </td>
                   {% if current_user.is_authenticated %}
                   <td>
@@ -136,10 +136,10 @@
           <!-- <div class="container-fluid table-container p-2 pb-2 my-2">
             <div class="row">
               <div class="col-2 name-label-container" >
-                <label for="inputName" class="text-light pt-4 ps-2 h-100">name</label>
+                <label for="input-name" class="text-light pt-4 ps-2 h-100">name</label>
               </div>
               <div class="col-9">
-                <input type="text" name="name" class="form-control dark-input" id="inputName" placeholder="name" value="GregTheVase">
+                <input type="text" name="name" class="form-control dark-input" id="input-name" placeholder="name" value="GregTheVase">
               </div>
             </div>
          </div> -->
@@ -185,11 +185,11 @@
             <div class="container-fluid text-center text-light">
               <h4>Load a vase</h4>
               {% if current_user.is_authenticated %}
-              <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access">
+              <select type="select" name="loadAccess" class="form-select select-size2" id="index-load-access">
                 <option selected>private</option>
                 <option>public</option>
                 {% else %}
-              <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access" disabled title="login to save private vases!">
+              <select type="select" name="loadAccess" class="form-select select-size2" id="index-load-access" disabled title="login to save private vases!">
                 <option selected>public</option>
                 <option>private</option>
                 {% endif %}
