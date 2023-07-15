@@ -48,7 +48,9 @@ function setAllTables(vaseData){
     setTable("generic1-table",[vaseData["generic1"]]);
     setTable("radial-table",vaseData["radial"]);
     setTable("vertical-table",vaseData["vertical"]);
-    console.log("set name",vaseData["name"]);
+    if (debug){
+        console.log("set name",vaseData["name"]);
+    }
     $("#input-name").val(vaseData["name"]);
 
 }
@@ -366,7 +368,9 @@ function createIndexList(indexList,offsetDir=0){
 
 // button actions 
 $(document).on("click",'#vaseLoader' ,function(event) {
-    console.log("load from index attempt",);
+    if (debug){
+        console.log("load from index attempt");
+    }
     event.stopPropagation();
     event.stopImmediatePropagation();
     var data = event.target.getAttribute("data");
