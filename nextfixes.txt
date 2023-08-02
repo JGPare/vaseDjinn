@@ -1,0 +1,3 @@
+- Write some documentation/note that usernames are publicly visible under vase names
+- fix control panel for smaller height screens 
+- add download tracking (and counter??), public vase sorting by downloads
