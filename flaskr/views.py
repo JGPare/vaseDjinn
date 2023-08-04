@@ -15,7 +15,7 @@ home_bp = Blueprint('home', __name__,template_folder='templates')
 @home_bp.route('/', methods=['GET', 'POST'])
 def home():
     if not current_user.is_authenticated:
-        flash("log in to save and load vases")
+        flash("Log in to save vases, press load to see public vases")
     return render_template('home.html')
 
 @home_bp.route('/saveVase', methods=['GET', 'POST'])
