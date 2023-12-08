@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,12 +11,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet">
- <!--  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+  <!--  <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
   <script src="https://kit.fontawesome.com/bbe447b772.js" crossorigin="anonymous"></script> -->
 
   <!--BOOTSTRAP-->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
 
   <!--THREE.JS-->
@@ -31,7 +35,7 @@
   </script>
 
   <link href="{{url_for('static',filename= 'style.css')}}" rel="stylesheet">
-  
+
   <script type="module" src="{{url_for('static',filename= 'main.js')}}">
   </script>
 
@@ -43,91 +47,92 @@
   <link href="{{url_for('static',filename= 'bootstrap5.0.3_local.css')}}" rel="stylesheet">
   <script src="{{url_for('static',filename= 'bootstrap5.0.3_js.js')}}"></script>
   <script src="{{url_for('static',filename= 'jquery_local.js')}}"></script>
--->
+  -->
 
   <title>Vase Djinn</title>
 </head>
 
 <body id="bootstrap-overrides" class="h-100">
-  <div class="container-fluid px-3"> 
+  <div class="container-fluid px-3">
     <div class="row justify-content-center">
 
       <div class="col-5 p-0" id="mycontrols">
-
-
         <nav class="navbar navbar-expand navbar-dark bg-body-tertiary" id="mynav">
-        <div class="container-fluid">
+          <div class="container-fluid">
 
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse"      data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+              aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
+            </button>
 
-          <div class= "collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav me-auto mb-1">
-              <li><h1> Vase Djinn </h1></li>
-            </ul>
-          </div>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+              <ul class="navbar-nav me-auto mb-1">
+                <li>
+                  <h1> Vase Djinn </h1>
+                </li>
+              </ul>
+            </div>
 
-          <ul class="navbar-nav me-auto">
-            {% if current_user.is_authenticated %}
+            <ul class="navbar-nav me-auto">
+              {% if current_user.is_authenticated %}
               <li class="nav-item"><a class="nav-link active" href="{{url_for('auth.logout')}}">Logout</a></li>
-            {% else %}
+              {% else %}
               <li class="nav-item"><a class="nav-link active" href="{{url_for('auth.login')}}">Login</a></li>
               <li class="nav-item"><a class="nav-link active" href="{{url_for('auth.register')}}">Register</a></li>
-            {% endif %}
-          </ul>
-        </div>
-      </nav>
-
-    {% for message in get_flashed_messages() %}
-      <div class="my-alert alert alert-secondary alert-dismissible fade show py-auto mx-2" role="alert">
-        <p class="text-light"> {{ message }} </p>
-        <button type="button" class="btn-close pt-2" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-    {% endfor %}
-
-      <div class="pe-2 ps-1 ">
-        <div class="container my-container1 pt-1 pb-2">
-          <form action="saveVase" id='myForm' method="post">
-
-<!-- Will be new head of menu once access settings are added!!! -->
- 
-          <div class="container-fluid table-container my-2 py-2">
-            <table class="table table-dark table-hover my-dark-table" id="name-table" data="name">
-              <thead>
-                <tr>
-                  <td data="name" class="fs-5">name</td>
-                  {% if current_user.is_authenticated %}
-                  <td data="access" class="fs-5">access</td>
-                  {% else %}
-                  <td hidden data="access" class="fs-5">access</td>
-                  {% endif %}
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <input type="text" name="name" class="form-control dark-input" id="input-name" placeholder="name" value="GregTheVase">
-                  </td>
-                  {% if current_user.is_authenticated %}
-                  <td>
-                    <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access">
-                      <option selected>private</option>
-                      <option>public</option>
-                  </td>
-                      {% else %}
-                  <td hidden>
-                    <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access"  title="login to save vases!" disabled>
-                      <option selected>public</option>
-                      <option>private</option>
-                      {% endif %}
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+              {% endif %}
+            </ul>
           </div>
-        
-          <!-- <div class="container-fluid table-container p-2 pb-2 my-2">
+        </nav>
+
+        {% for message in get_flashed_messages() %}
+        <div class="my-alert alert alert-secondary alert-dismissible fade show py-auto mx-2" role="alert">
+          <p class="text-light"> {{ message }} </p>
+          <button type="button" class="btn-close pt-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+
+        <div class="pe-2 ps-1 ">
+          <div class="container my-container1 pt-1 pb-2">
+            <form action="saveVase" id='myForm' method="post">\
+
+              <div class="container-fluid table-container my-2 py-2">
+                <table class="table table-dark table-hover my-dark-table" id="name-table" data="name">
+                  <thead>
+                    <tr>
+                      <td data="name" class="fs-5">name</td>
+                      {% if current_user.is_authenticated %}
+                      <td data="access" class="fs-5">access</td>
+                      {% else %}
+                      <td hidden data="access" class="fs-5">access</td>
+                      {% endif %}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <input type="text" name="name" class="form-control dark-input" id="input-name"
+                          placeholder="name" value="GregTheVase">
+                      </td>
+                      {% if current_user.is_authenticated %}
+                      <td>
+                        <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access">
+                          <option selected>private</option>
+                          <option>public</option>
+                      </td>
+                      {% else %}
+                      <td hidden>
+                        <select type="select" name="loadAccess" class="form-select select-size2" id="input-load-access"
+                          title="login to save vases!" disabled>
+                          <option selected>public</option>
+                          <option>private</option>
+                          {% endif %}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- <div class="container-fluid table-container p-2 pb-2 my-2">
             <div class="row">
               <div class="col-2 name-label-container" >
                 <label for="input-name" class="text-light pt-4 ps-2 h-100">name</label>
@@ -138,70 +143,70 @@
             </div>
          </div> -->
 
-<!-- HEIGHT WIDTH THICKNESS TABLE -->
-          <div class="container-fluid table-container my-2 mt-3" id="generic0-container"></div>
-<!-- STEPS AND SLOPE TABLE -->
-           <div class="container-fluid table-container my-2" id="generic1-container"></div>
-<!-- RADIAL WAVES -->
-          <div class="container-fluid table-container my-2" 
-              id="radial-container"></div>
-<!-- VERTICAL WAVES -->
-          <div class="container-fluid table-container my-2" id="vertical-container"></div>
+              <!-- HEIGHT WIDTH THICKNESS TABLE -->
+              <div class="container-fluid table-container my-2 mt-3" id="generic0-container"></div>
+              <!-- STEPS AND SLOPE TABLE -->
+              <div class="container-fluid table-container my-2" id="generic1-container"></div>
+              <!-- RADIAL WAVES -->
+              <div class="container-fluid table-container my-2" id="radial-container"></div>
+              <!-- VERTICAL WAVES -->
+              <div class="container-fluid table-container my-2" id="vertical-container"></div>
 
-          <div class="container-fluid p-1 pt-2">
-            <div class="row">
-              {% if current_user.is_authenticated %}
-              <div class="col-6">
-                <input type="submit" class="btn my-button w-100" role="button" id="save-vase" value="save" form="myForm" title="Save and update"> 
+              <div class="container-fluid p-1 pt-2">
+                <div class="row">
+                  {% if current_user.is_authenticated %}
+                  <div class="col-6">
+                    <input type="submit" class="btn my-button w-100" role="button" id="save-vase" value="save"
+                      form="myForm" title="Save and update">
+                  </div>
+                  <div class="col-6">
+                    <a class="btn my-button w-100" role="button" id="load-vase" href="">load</a>
+                  </div>
+                  {% else %}
+                  <div class="col-6">
+                    <input type="submit" class="btn my-button w-100" role="button" id="save-vase" value="update"
+                      form="myForm" title="Updates current model">
+                  </div>
+                  <div class="col-6">
+                    <a class="btn my-button w-100" role="button" id="load-vase" href="">load</a>
+                  </div>
+                  {% endif %}
+                </div>
               </div>
-              <div class="col-6">
-                <a class="btn my-button w-100" role="button" id="load-vase" href="">load</a>
-              </div> 
-              {% else %}
-              <div class="col-6">
-                <input type="submit" class="btn my-button w-100" role="button" id="save-vase" value="update" form="myForm" title="Updates current model">
-              </div>
-              <div class="col-6">
-                <a class="btn my-button w-100" role="button" id="load-vase" href="">load</a>
-              </div> 
-              {% endif %}
-            </div>
-          </div>
+            </form>
 
-          </form>
-          
-          <!-- INDEX Table -->
-          <div class="container-fluid p-1" id="index-outer-container" style="display: none">
-            <div class="container-fluid text-center text-light">
-              <h4>Load a vase</h4>
-              {% if current_user.is_authenticated %}
-              <select type="select" name="loadAccess" class="form-select select-size2" id="index-load-access">
-                <option selected>private</option>
-                <option>public</option>
+            <!-- INDEX Table -->
+            <div class="container-fluid p-1" id="index-outer-container" style="display: none">
+              <div class="container-fluid text-center text-light">
+                <h4>Load a vase</h4>
+                {% if current_user.is_authenticated %}
+                  <select type="select" name="loadAccess" class="form-select select-size2" id="index-load-access">
+                    <option selected>private</option>
+                    <option>public</option>
                 {% else %}
-              <select type="select" name="loadAccess" class="form-select select-size2" id="index-load-access" disabled title="login to save private vases!">
-                <option selected>public</option>
-                <option>private</option>
+                  <select type="select" name="loadAccess" class="form-select select-size2" id="index-load-access"
+                    disabled title="login to save private vases!">
+                    <option selected>public</option>
+                    <option>private</option>
                 {% endif %}
-                
-              </select>
-            
-            <div class="container-fluid table-container mx-auto" id="index-container">
+                  </select>
 
-            </div>
-            </div>
-            <div class="row">
-              <div class="col-6">
-                <a class="btn my-button w-100" role="button" id="delete-vase" href="">delete</a>
+                  <div class="container-fluid table-container mx-auto" id="index-container">
+
+                  </div>
               </div>
-              <div class="col-6">
-                <a class="btn my-button w-100" role="button" id="edit-vase" href="">edit</a>
+              <div class="row">
+                <div class="col-6">
+                  <a class="btn my-button w-100" role="button" id="delete-vase" href="">delete</a>
+                </div>
+                <div class="col-6">
+                  <a class="btn my-button w-100" role="button" id="edit-vase" href="">edit</a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
       <div class="col-7 p-0 m-0" id="myCanvasContainer">
         <div class="p-0 m-0" id="mycanvas"></div>
@@ -214,8 +219,8 @@
 <script>
   var default_path = "/static/stl/default.stl";
   var stl_path = default_path;
-  var downArrow = {{ url_for("static",filename= 'caret-down-solid.svg')|tojson}};
-  var upArrow = {{ url_for("static",filename= 'caret-up-solid.svg')|tojson}};
+  var downArrow = {{ url_for("static", filename = 'caret-down-solid.svg') | tojson}};
+  var upArrow = {{ url_for("static", filename = 'caret-up-solid.svg') | tojson}};
 </script>
 
 </html>
