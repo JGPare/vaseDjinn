@@ -121,7 +121,7 @@ def load():
         vase_data = default_vase()
         path = gen(vase_data)
         appearance = ""
-        vase_data = json.dumps(vase_data) # Stringigy vase data
+        vase_data = json.dumps(vase_data) # Stringify vase data
 
     return json.dumps([vase_data,appearance,path])
 
