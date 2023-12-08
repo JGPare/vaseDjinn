@@ -78,8 +78,8 @@ def r_value(
     height_grid,
     radial_grid,
     slope,
-    radial_props,
-    vertical_props):
+    radial_modifiers,
+    vertical_modifiers):
     
     # normalize height as percent
     h = height_grid/height
@@ -88,15 +88,15 @@ def r_value(
     max_slope = np.pi/4
     slope = max_slope*(slope/100 - 0.5)
 
-    r = width + np.sin(slope)*height_grid
+    radius = width + np.sin(slope)*height_grid
 
-    for c in radial_props:
-        r += c["mag"]/100*np.sin(c["freq"]*radial_grid + c["twist"]*h + 2*np.pi*c["phase"]/100) 
+    for modifier in radial_modifiers:
+        radius += modifier["mag"]/100*np.sin(modifier["freq"]*radial_grid + modifier["twist"]*h + 2*np.pi*modifier["phase"]/100) 
 
-    for c in vertical_props:
-        r += c["mag"]/100*np.sin(c["freq"]*h + 2*np.pi*c["phase"]/100) 
+    for modifier in vertical_modifiers:
+        radius += modifier["mag"]/100*np.sin(modifier["freq"]*h + 2*np.pi*modifier["phase"]/100) 
 
-    return r
+    return radius
 
 def gen(vase_data):
     generic = vase_data["generic0"] | vase_data["generic1"]
@@ -114,9 +114,9 @@ def gen(vase_data):
     wall_thickness = rel_thickness*width
     btm_steps = max(int(rel_thickness*vertical_steps)-1,0)
 
-    solid_flag = False
+    is_solid = False
     if generic["thickness"] == settings["thickness"]["max"]:
-        solid_flag = True
+        is_solid = True
 
     vertical_vec = np.linspace(0,height,vertical_steps)
     vertical_vec.shape = (vertical_steps,1)
@@ -196,7 +196,7 @@ def gen(vase_data):
     s3 = np.asarray([btm_outer_x1,btm_outer_origin,btm_outer_x2])
     s = np.append(s,s3,1)
 
-    if not solid_flag:
+    if not is_solid:
         btm_inner_x1 = inner_points[btm_steps][:-1]
         btm_inner_x2 = inner_points[btm_steps][1:]
         btm_inner_origin = np.ones((btm_inner_x1.shape))
@@ -210,7 +210,7 @@ def gen(vase_data):
     top_x1 = outer_points[-1][:-1]
     top_x2 = outer_points[-1][1:]
 
-    if not solid_flag:
+    if not is_solid:
 
         top_y1 = inner_points[-1][:-1]
         top_y2 = inner_points[-1][1:]

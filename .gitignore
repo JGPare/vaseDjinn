@@ -156,3 +156,6 @@ cython_debug/
 
 #mac specfic folder files
 *.DS_Store
+
+# stls should be local
+*.stl
