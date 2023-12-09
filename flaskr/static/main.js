@@ -419,9 +419,14 @@ $(document).on("click",'#up-arrow-button' ,function(event) {
     createIndexList(indexList,-1);
 });
 
+$(document).on("change", ".form-range", function(event){
+    event.stopPropagation();
+    console.log("slider change");
+    update();
+})
+
 window.onbeforeunload = closingCode;
 function closingCode(){
-   deleteFile(stl_path);
    return null;
 }
 
@@ -431,33 +436,20 @@ function closingCode(){
 $('#myForm').submit(function(event) {
     event.preventDefault(); // Prevent the form from submitting via the browser
     var form = $(this);
-    var data = readAllTables();
+    
     if (debug) {
         console.log('save attempt attempt');
         console.log("Vase Data:")
         console.log(data);
     }
-    data["appearance"] = getApperance();
-    $.ajax({
-      type: form.attr('method'),
-      url: form.attr('action'),
-      contentType: "application/json; charset=utf-8",
-      traditional: true,
-      data: JSON.stringify(data),
-  }).done(function(data) {
-      const old_path = stl_path;
-      stl_path = JSON.parse(data);
-      if (debug){
-        console.log('vase saved');
-    }
-    removeMesh();
-    addMesh();
-    deleteFile(old_path);
-}).fail(function(data) {
-      // Optionally alert the user of an error here...
-});
+    update()
 });
 
+function update(){
+    const data = readAllTables();
+    removeMesh();
+    addMesh({...data.generic0, ...data.generic1});
+}
 
 // contentType: "application/json; charset=utf-8",
 // traditional: true,
@@ -504,107 +496,5 @@ function loadDefault(name="") {
     }).fail(function(data) {
       console.log('failed to load default');
   });
-};
-
-function getIndex(){
-    if (debug){
-        console.log('load index attempt');
-    }
-    var access = $("#index-load-access").val();
-    $.ajax({
-        type: "POST",
-        url: "getIndex",
-        contentType: "application/json; charset=utf-8",
-        traditional: true,
-        data: JSON.stringify(access),
-    }).done(function(data) {
-        if (debug){
-           console.log('indexes got');
-       }
-       indexList = JSON.parse(data);
-       createIndexList(indexList);
-   }).fail(function(data) {
-      console.log('failed to get indexes');
-  });
-}
-
-// load function
-function load(inputData="") {
-    if (debug){
-        console.log('load attempt');
-    }
-    $.ajax({
-        type: "POST",
-        url: "loadVase",
-        contentType: "application/json; charset=utf-8",
-        traditional: true,
-        data: inputData,
-    }).done(function(data) {
-        if (debug){
-            console.log('loaded vase');
-        }
-        var [vaseData,appearance,path] = JSON.parse(data);
-        // console.log("pre-parse load path",path);
-        const old_path = stl_path;
-        stl_path = path;
-        vaseData = JSON.parse(vaseData);
-        appearance = JSON.parse(appearance);
-        setApperance(appearance);
-        vaseData["name"] = JSON.parse(inputData).name;
-        setAllTables(vaseData);
-        removeMesh();
-        addMesh();
-        deleteFile(old_path);
-    }).fail(function(data) {
-      console.log('failed to load vase');
-  });
-}
-
-// delete function
-function deleteVase(name="") {
-    if (debug){
-        console.log('delete vase attempt');
-    }
-    $.ajax({
-        type: "POST",
-        url: "deleteVase",
-        contentType: "application/json; charset=utf-8",
-        traditional: true,
-        data: JSON.stringify(name),
-    }).done(function(data) {
-        if (debug){
-            console.log('deleted vase');
-        }
-        var vaseData = JSON.parse(data);
-        $("#index-table").remove();
-        getIndex();
-        vaseData["name"] = name;
-        setAllTables(vaseData);
-        removeMesh();
-        stl_path = default_path;
-        addMesh();
-    }).fail(function(data) {
-      // Optionally alert the user of an error here...
-    });
-};
-
-// delete function
-function deleteFile(path="") {
-    if (debug){
-        console.log('delete file attempt');
-    }
-    $.ajax({
-        type: "POST",
-        url: "deleteFile",
-        contentType: "application/json; charset=utf-8",
-        traditional: true,
-        data: JSON.stringify(path),
-    }).done(function(data) {
-        if (debug){
-            console.log('deleted file');
-        }
-    }).fail(function(data) {
-      // Optionally alert the user of an error here...
-    });
 };
 

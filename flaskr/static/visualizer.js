@@ -1,11 +1,12 @@
 
-import * as THREE from 'three';
+import * as THREE from 'three'
 
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import Stats from 'three/addons/libs/stats.module.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { STLExporter } from 'three/addons/exporters/STLExporter.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
+import { generateBaseGeometry } from './vaseGenerator.js';
 
 let container, mynav;
 
@@ -20,6 +21,8 @@ var vaseColor = 0x560bad;
 let params;
 
 let rotationSpeed = 0.8;
+
+const clock = new THREE.Clock()
 
 let scale = 0.02;
 
@@ -46,24 +49,20 @@ export function getApperance(){
     return vaseMesh.material.color.getHex();
 }
 
-export function addMesh(){
-    const loader = new STLLoader();
-    loader.load( stl_path, function ( geometry ) {
+export function addMesh(vaseData){
+    
+    const geometry = generateBaseGeometry(vaseData)
+    const material = new THREE.MeshPhongMaterial( { color: vaseColor, specular: 0x494949, shininess: 100 } );
+    vaseMesh = new THREE.Mesh( geometry, material );
 
-        const material = new THREE.MeshPhongMaterial( { color: vaseColor, specular: 0x494949, shininess: 100 } );
-        vaseMesh = new THREE.Mesh( geometry, material );
+    vaseMesh.scale.set( scale, scale, scale );
+    vaseMesh.position.set( 0, scale*vaseMesh.geometry.parameters.height/2, 0);
+    vaseMesh.rotation.set(0,0,0);
 
-        vaseMesh.position.set( 0, 0, 0 );
-        vaseMesh.rotation.set(0,0,0);
-        vaseMesh.scale.set( scale, scale, scale );
-        vaseMesh.rotation.x = -Math.PI / 2;
+    vaseMesh.castShadow = true;
+    vaseMesh.receiveShadow = true;
 
-        vaseMesh.castShadow = true;
-        vaseMesh.receiveShadow = true;
-
-        scene.add( vaseMesh );
-
-    } );
+    scene.add( vaseMesh )
 
 }
 
@@ -74,20 +73,19 @@ function init() {
     WIDTH = container.offsetWidth;
     HEIGHT = window.innerHeight;
 
-    camera = new THREE.PerspectiveCamera( 35, WIDTH / HEIGHT, 1, 15 );
-    camera.position.set( 3, 0.15, 3 );
-    camera.position.y = 3;
-
-    cameraTarget = new THREE.Vector3( 0, 0.5, 0 );
-
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x596869 );
     scene.fog = new THREE.Fog( 0x596869, 8, 15 );
 
+
     const ground = new THREE.Mesh( 
         new THREE.PlaneGeometry( 2000, 2000 ), 
         new THREE.MeshPhongMaterial( { color: 0x363946, depthWrite: false } ) );
-    ground.rotation.x = - Math.PI / 2;
+    ground.rotation.x = Math.PI / 2;
+    ground.rotation.y = -Math.PI / 2;
+    ground.rotation.z = -Math.PI / 2;
+
+
     ground.receiveShadow = true;
     scene.add( ground );
 
@@ -96,8 +94,15 @@ function init() {
     grid.material.transparent = true;
     scene.add( grid );
 
-    // add inital mesh 
-    addMesh()
+    camera = new THREE.PerspectiveCamera( 35, WIDTH / HEIGHT, 1, 15 );
+    camera.position.set( 3, 3, 3 );
+
+    cameraTarget = new THREE.Vector3( 0, 0.5, 0 );
+
+    camera.lookAt( cameraTarget );
+
+    const axesHelper = new THREE.AxesHelper( 5 );
+    scene.add( axesHelper );
 
     // Lights
 
@@ -258,14 +263,12 @@ function animate() {
 
 function render() {
 
-    const timer = Date.now() * 0.0005;
-
+    const elapsedTime = clock.getElapsedTime()
     camera.lookAt( cameraTarget );
-
     scene.traverse( function ( vaseMesh ) {
 
                     if ( vaseMesh.isMesh === true ) {
-                        vaseMesh.rotation.z = timer * rotationSpeed;
+                        vaseMesh.rotation.y = elapsedTime * rotationSpeed;
                     }
                 } );
 
