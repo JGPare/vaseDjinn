@@ -448,7 +448,7 @@ $('#myForm').submit(function(event) {
 function update(){
     const data = readAllTables();
     removeMesh();
-    addMesh({...data.generic0, ...data.generic1});
+    addMesh(data);
 }
 
 // contentType: "application/json; charset=utf-8",

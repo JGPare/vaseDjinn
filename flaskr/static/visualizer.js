@@ -6,20 +6,22 @@ import Stats from 'three/addons/libs/stats.module.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { STLExporter } from 'three/addons/exporters/STLExporter.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { generateBaseGeometry } from './vaseGenerator.js';
+import { generateGeometry } from './vaseGenerator.js';
 
 let container, mynav;
 
 let camera, stats, cameraTarget, scene, renderer;
 
-var WIDTH, HEIGHT;
+let WIDTH, HEIGHT;
 
-var vaseMesh;
+let vaseMesh;
 
-var vaseColor = 0x560bad;
+// 3JS UI
 
 let params;
 
+let vaseColor = 0x560bad;
+let shininess = 0.5;
 let rotationSpeed = 0.8;
 
 const clock = new THREE.Clock()
@@ -51,12 +53,20 @@ export function getApperance(){
 
 export function addMesh(vaseData){
     
-    const geometry = generateBaseGeometry(vaseData)
-    const material = new THREE.MeshPhongMaterial( { color: vaseColor, specular: 0x494949, shininess: 100 } );
+    const geometry = generateGeometry(vaseData)
+    geometry.computeBoundingBox()
+    console.log(geometry.boundingBox);
+    const material = new THREE.MeshPhongMaterial( { 
+        color: vaseColor, 
+        emissive: 0x000000,
+        specular: 0x111111,
+        shininess: shininess,
+        flatShading: true, } );
+    //material.side = THREE.DoubleSide
     vaseMesh = new THREE.Mesh( geometry, material );
 
     vaseMesh.scale.set( scale, scale, scale );
-    vaseMesh.position.set( 0, scale*vaseMesh.geometry.parameters.height/2, 0);
+    vaseMesh.position.set( 0, scale*-geometry.boundingBox.min.y, 0);
     vaseMesh.rotation.set(0,0,0);
 
     vaseMesh.castShadow = true;
@@ -73,33 +83,39 @@ function init() {
     WIDTH = container.offsetWidth;
     HEIGHT = window.innerHeight;
 
+    // Scene
+
     scene = new THREE.Scene();
     scene.background = new THREE.Color( 0x596869 );
     scene.fog = new THREE.Fog( 0x596869, 8, 15 );
 
+    // Ground
 
     const ground = new THREE.Mesh( 
         new THREE.PlaneGeometry( 2000, 2000 ), 
-        new THREE.MeshPhongMaterial( { color: 0x363946, depthWrite: false } ) );
-    ground.rotation.x = Math.PI / 2;
-    ground.rotation.y = -Math.PI / 2;
-    ground.rotation.z = -Math.PI / 2;
-
-
+        new THREE.MeshPhongMaterial( { 
+            color: 0x363946,
+            depthWrite: false } ) );
+    
+    ground.rotation.x = -Math.PI / 2;
     ground.receiveShadow = true;
     scene.add( ground );
+
+    // Grid
 
     const grid = new THREE.GridHelper( 200, 400, 0x000000, 0x000000 );
     grid.material.opacity = 0.2;
     grid.material.transparent = true;
     scene.add( grid );
 
+    // Camera
+
     camera = new THREE.PerspectiveCamera( 35, WIDTH / HEIGHT, 1, 15 );
     camera.position.set( 3, 3, 3 );
-
     cameraTarget = new THREE.Vector3( 0, 0.5, 0 );
-
     camera.lookAt( cameraTarget );
+
+    // Axes Helper
 
     const axesHelper = new THREE.AxesHelper( 5 );
     scene.add( axesHelper );
@@ -112,7 +128,8 @@ function init() {
     addShadowedLight( 0, 1, 1, 0x90e0ef, 1 );
     addShadowedLight( 1, 1, 0, 0xf72585, 1 );
     
-    // renderer
+    // Renderer
+
     renderer = new THREE.WebGLRenderer( { antialias: true } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( WIDTH, HEIGHT );
@@ -125,7 +142,7 @@ function init() {
     // stats = new Stats();
     // container.appendChild( stats.dom );
 
-    // orbit controls
+    // Orbit Controls
 
     const controls = new OrbitControls( camera, renderer.domElement );
     controls.target.set( 0, 0.5, 0 );
@@ -133,35 +150,41 @@ function init() {
     controls.maxDistance = 8;
     controls.update();
 
-    // add resize listener 
+    // Resize listener 
 
     window.addEventListener( 'resize', onWindowResize );
 
     // GUI
 
     params  = {
-        "spin" : 0.5,
-    };
+        rotationSpeed : 0.5,
+        shininess : 0.5,
+        color: 0x560bad,
+    }
     const colorFormats = {
         color: 0x560bad,
         object: { r: 1, g: 1, b: 1 },
         array: [ 1, 1, 1 ]
-    };
-           
+    }
 
     const gui = new GUI();
     const sceneFolder = gui.addFolder('Model');
     const exportFolder = gui.addFolder('Export');
-    sceneFolder.add( params, 'spin',0,1,0.01).onFinishChange( 
-        function (newSpin) {
-            rotationSpeed = newSpin;
+
+    sceneFolder.add( params, 'rotationSpeed',0,1,0.01).onFinishChange( 
+        function (newRotationSpeed) {
+            rotationSpeed = newRotationSpeed;
+    });
+
+    sceneFolder.add( params, 'shininess',0,1,0.01).onFinishChange( 
+        function (newShininess) {
+            shininess = newShininess;
     });
 
     // Create color pickers for multiple color formats
-    sceneFolder.addColor( colorFormats, 'color' ).onChange(
+    sceneFolder.addColor( params, 'color' ).onChange(
         function (newColor){
             vaseColor = newColor;
-            console.log(newColor);
             vaseMesh.material.color.setHex(newColor);
         }
         );
@@ -175,7 +198,7 @@ function exportASCII() {
     const tempMesh = new THREE.Mesh( vaseMesh.geometry, vaseMesh.material );
 
     tempMesh.scale.set( 1/scale, 1/scale, 1/scale );
-    tempMesh.rotation.x = Math.PI / 2;
+    //tempMesh.rotation.x = Math.PI / 2;
 
     const result = exporter.parse( tempMesh );
     saveString( result, $("#inputName").val()+'.stl' );
@@ -187,7 +210,7 @@ function exportBinary() {
     const tempMesh = new THREE.Mesh( vaseMesh.geometry, vaseMesh.material );
 
     tempMesh.scale.set( 1/scale, 1/scale, 1/scale );
-    tempMesh.rotation.x = Math.PI / 2;
+    //tempMesh.rotation.x = Math.PI / 2;
 
     const result = exporter.parse( tempMesh, { binary: true } );
     saveArrayBuffer( result, $("#inputName").val()+'.stl' );
@@ -264,15 +287,11 @@ function animate() {
 function render() {
 
     const elapsedTime = clock.getElapsedTime()
-    camera.lookAt( cameraTarget );
-    scene.traverse( function ( vaseMesh ) {
 
-                    if ( vaseMesh.isMesh === true ) {
-                        vaseMesh.rotation.y = elapsedTime * rotationSpeed;
-                    }
-                } );
+    if ( vaseMesh ) {
+        vaseMesh.rotation.y = elapsedTime * rotationSpeed;
+    }
 
     renderer.render( scene, camera );
-
 }
 
