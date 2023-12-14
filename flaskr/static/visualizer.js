@@ -8,7 +8,7 @@ import { STLExporter } from 'three/addons/exporters/STLExporter.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { generateGeometry } from './vaseGenerator.js';
 
-let container, mynav;
+let container;
 
 let camera, stats, cameraTarget, scene, renderer;
 
@@ -19,9 +19,7 @@ let vaseMesh;
 // 3JS UI
 
 let params;
-
 let vaseColor = 0x560bad;
-let shininess = 0.5;
 let rotationSpeed = 0.8;
 
 const clock = new THREE.Clock()
@@ -60,9 +58,9 @@ export function addMesh(vaseData){
         color: vaseColor, 
         emissive: 0x000000,
         specular: 0x111111,
-        shininess: shininess,
-        flatShading: true, } );
-    //material.side = THREE.DoubleSide
+        shininess: 0.5,
+        flatShading: true, } )
+
     vaseMesh = new THREE.Mesh( geometry, material );
 
     vaseMesh.scale.set( scale, scale, scale );
@@ -117,8 +115,8 @@ function init() {
 
     // Axes Helper
 
-    const axesHelper = new THREE.AxesHelper( 5 );
-    scene.add( axesHelper );
+    // const axesHelper = new THREE.AxesHelper( 5 );
+    // scene.add( axesHelper );
 
     // Lights
 
@@ -137,7 +135,7 @@ function init() {
 
     container.appendChild( renderer.domElement );
 
-    // stats
+    // Stats
 
     // stats = new Stats();
     // container.appendChild( stats.dom );
@@ -158,13 +156,7 @@ function init() {
 
     params  = {
         rotationSpeed : 0.5,
-        shininess : 0.5,
         color: 0x560bad,
-    }
-    const colorFormats = {
-        color: 0x560bad,
-        object: { r: 1, g: 1, b: 1 },
-        array: [ 1, 1, 1 ]
     }
 
     const gui = new GUI();
@@ -176,12 +168,6 @@ function init() {
             rotationSpeed = newRotationSpeed;
     });
 
-    sceneFolder.add( params, 'shininess',0,1,0.01).onFinishChange( 
-        function (newShininess) {
-            shininess = newShininess;
-    });
-
-    // Create color pickers for multiple color formats
     sceneFolder.addColor( params, 'color' ).onChange(
         function (newColor){
             vaseColor = newColor;
@@ -198,7 +184,6 @@ function exportASCII() {
     const tempMesh = new THREE.Mesh( vaseMesh.geometry, vaseMesh.material );
 
     tempMesh.scale.set( 1/scale, 1/scale, 1/scale );
-    //tempMesh.rotation.x = Math.PI / 2;
 
     const result = exporter.parse( tempMesh );
     saveString( result, $("#inputName").val()+'.stl' );
@@ -210,12 +195,13 @@ function exportBinary() {
     const tempMesh = new THREE.Mesh( vaseMesh.geometry, vaseMesh.material );
 
     tempMesh.scale.set( 1/scale, 1/scale, 1/scale );
-    //tempMesh.rotation.x = Math.PI / 2;
 
     const result = exporter.parse( tempMesh, { binary: true } );
     saveArrayBuffer( result, $("#inputName").val()+'.stl' );
 
 }
+
+// Export functionality
 
 const link = document.createElement( 'a' );
 link.style.display = 'none';
@@ -280,7 +266,6 @@ function animate() {
 
     requestAnimationFrame( animate );
     render();
-    // stats.update();
 
 }
 

@@ -12,7 +12,7 @@ var displayNum = 11;
 window.onload = init;
 
 function init(){
-    loadSettings();
+    loadSettings()
 }
 
 import {removeMesh,addMesh,getApperance,setApperance} from './visualizer.js';
@@ -192,10 +192,8 @@ function createTables(data) {
 
     for(var i = 0; i < radials.length; i++) {
         var row = table.insertRow(i);
-        var row_label = document.createElement("p");
-        row_label.innerHTML = "radial " + (i+1);
-        row_label.setAttribute("class","input_small");
-        row.insertCell(0).appendChild(row_label); 
+        row.insertCell(0).innerHTML = "radial " + (i+1);
+        
         row.insertCell(1).appendChild(createRange(
             "r" + i + "_mag",
             radials[i].mag,
@@ -247,10 +245,7 @@ function createTables(data) {
     
     for(var i = 0; i < verticals.length; i++) {
         var row = table.insertRow(i);
-        var row_label = document.createElement("p");
-        row_label.innerHTML = "vertical " + (i+1);
-        row_label.setAttribute("class","input_small");
-        row.insertCell(0).appendChild(row_label); 
+        row.insertCell(0).innerHTML = "vertical " + (i+1); 
 
         row.insertCell(1).appendChild(createRange(
             "v" + i + "_mag",
@@ -419,9 +414,11 @@ $(document).on("click",'#up-arrow-button' ,function(event) {
     createIndexList(indexList,-1);
 });
 
-$(document).on("change", ".form-range", function(event){
+$(document).on("input", ".form-range", function(event){
     event.stopPropagation();
-    console.log("slider change");
+    if (debug) {
+        console.log("slider change");
+    }
     update();
 })
 
@@ -430,30 +427,41 @@ function closingCode(){
    return null;
 }
 
-// AJAX FUNCTIONS //
-
-// save function
-$('#myForm').submit(function(event) {
-    event.preventDefault(); // Prevent the form from submitting via the browser
-    var form = $(this);
-    
-    if (debug) {
-        console.log('save attempt attempt');
-        console.log("Vase Data:")
-        console.log(data);
-    }
-    update()
-});
-
 function update(){
     const data = readAllTables();
     removeMesh();
     addMesh(data);
 }
 
-// contentType: "application/json; charset=utf-8",
-// traditional: true,
-// load settings function
+// AJAX FUNCTIONS //
+
+// save function
+$('#myForm').submit(function(event) {
+    event.preventDefault(); // Prevent the form from submitting via the browser
+    var form = $(this);
+    var data = readAllTables();
+    if (debug) {
+        console.log('save attempt attempt');
+        console.log("Vase Data:")
+        console.log(data);
+    }
+    data["appearance"] = getApperance();
+    $.ajax({
+        type: form.attr('method'),
+        url: form.attr('action'),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        data: JSON.stringify(data),
+    }).done(function(data) {
+        if (debug){
+          console.log('vase saved');
+        }
+        $('input[name="height"]').focus()
+    }).fail(function(data) {
+    // Optionally alert the user of an error here...
+    });
+});
+
 function loadSettings() {
     if (debug){
         console.log('setting load attempt')
@@ -463,18 +471,17 @@ function loadSettings() {
       url: "loadSettings",
       data: "",
   }).done(function(data) {
-      if (debug){
-        console.log('loaded settings');
-    }
+        if (debug){
+            console.log('loaded settings');
+        }
     settings = JSON.parse(data);
     loadDefault();
       // console.log(settings);
-}).fail(function(data) {
-  console.log('failed to load settings');
-});
+    }).fail(function(data) {
+        console.log('failed to load settings');
+    });
 };
 
-// load function
 function loadDefault(name="") {
     if (debug){
         console.log('load default attempt');
@@ -489,12 +496,106 @@ function loadDefault(name="") {
         if (debug){
             console.log('loaded default vase');
         }
-        var [vaseData,appearance,path] = JSON.parse(data)
-        stl_path = path;
+        var [vaseData,appearance] = JSON.parse(data)
         vaseData = JSON.parse(vaseData);
         createTables(vaseData);
+        update()
     }).fail(function(data) {
       console.log('failed to load default');
   });
 };
 
+function getIndex(){
+    if (debug){
+        console.log('load index attempt');
+    }
+    var access = $("#index-load-access").val();
+    $.ajax({
+        type: "POST",
+        url: "getIndex",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        data: JSON.stringify(access),
+    }).done(function(data) {
+        if (debug){
+           console.log('indexes got');
+       }
+       indexList = JSON.parse(data);
+       createIndexList(indexList);
+    }).fail(function(data) {
+      console.log('failed to get indexes');
+    });
+}
+
+// load function
+function load(inputData="") {
+    if (debug){
+        console.log('load attempt');
+    }
+    $.ajax({
+        type: "POST",
+        url: "loadVase",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        data: inputData,
+    }).done(function(data) {
+        if (debug){
+            console.log('loaded vase');
+        }
+        var [vaseData,appearance] = JSON.parse(data);
+        vaseData = JSON.parse(vaseData);
+        appearance = JSON.parse(appearance);
+        setApperance(appearance);
+        vaseData["name"] = JSON.parse(inputData).name
+        setAllTables(vaseData)
+        update()
+    }).fail(function(data) {
+      console.log('failed to load vase');
+  });
+}
+
+// delete function
+function deleteVase(name="") {
+    if (debug){
+        console.log('delete vase attempt');
+    }
+    $.ajax({
+        type: "POST",
+        url: "deleteVase",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        data: JSON.stringify(name),
+    }).done(function(data) {
+        if (debug){
+            console.log('deleted vase');
+        }
+        var vaseData = JSON.parse(data);
+        $("#index-table").remove();
+        getIndex();
+        vaseData["name"] = name;
+        setAllTables(vaseData)
+        update()
+    }).fail(function(data) {
+      // Optionally alert the user of an error here...
+    });
+};
+
+// // delete function
+// function deleteFile(path="") {
+//     if (debug){
+//         console.log('delete file attempt');
+//     }
+//     $.ajax({
+//         type: "POST",
+//         url: "deleteFile",
+//         contentType: "application/json; charset=utf-8",
+//         traditional: true,
+//         data: JSON.stringify(path),
+//     }).done(function(data) {
+//         if (debug){
+//             console.log('deleted file');
+//         }
+//     }).fail(function(data) {
+//       // Optionally alert the user of an error here...
+//     });
+// };

@@ -1,4 +1,48 @@
 
+/* MEDIA QUERIES */
+
+
+
+/* Portrait tablets and small desktops */
+@media (max-width: 1100px) {
+  body{
+    min-width: 900px;
+    background-color: #1b2432 !important;
+  }
+  td{
+    font-size: smaller;
+  }
+  p{
+    font-size: smaller;
+  }
+  .nav-link{
+    font-size: medium !important;
+  }
+  .my-container1{
+    padding: 0 !important;
+  }
+  .table-container{
+    padding: 0rem 1rem 0rem 1rem !important;
+    margin: 0.5rem 0 0.5rem 0rem !important;
+  }
+  h1{
+    font-size: 2rem !important;
+  }
+  #mynav{
+    padding: 0;
+    margin: 0;
+  }
+  #index-container{
+    padding: 0rem 1rem 0rem 1rem !important;
+    margin: 0.5rem 0 0.5rem 0rem !important;  
+  }
+  #index-list-container{
+    padding: 0rem 1rem 0rem 1rem !important;
+    margin: 0.5rem 0 0.5rem 0rem !important;  
+  }
+
+}
+
 
 
 /* BOOTSTRAP TWEAKS */
@@ -20,7 +64,7 @@ body{
 
 h1{
   font-family: 'Open Sans';
-  font-size: 2.8rem;
+  font-size: 2.6rem;
   font-weight: 800;
   color: #fca311;
 }
@@ -93,6 +137,7 @@ h1{
   --bs-table-hover-color: #fff;
   color : #ced4da;
   margin-bottom: 0rem;
+  table-layout: fixed;
 }
 
 .dark-input{
@@ -156,14 +201,9 @@ h1{
   padding: 0 5px;
     
 }
-.navbar-dark .nav-item .nav-link{
-  font-size: 1.2rem;
-  color: #ced4da;
-  font-family: "Open Sans";
-}
 
 .navbar-dark .nav-item .nav-link.active{
-  font-size: 1.3rem;
+  font-size: 1.1rem;
   color: #ced4da;
   font-family: "Open Sans";
 }

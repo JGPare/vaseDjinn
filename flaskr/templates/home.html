@@ -94,7 +94,7 @@
         </div>
         {% endfor %}
 
-        <div class="pe-2 ps-1 ">
+        <div class="pe-2 ps-1">
           <div class="container my-container1 pt-1 pb-2">
             <form action="saveVase" id='myForm' method="post">\
 
@@ -167,7 +167,7 @@
                   </div>
                   {% else %}
                   <div class="col-6">
-                    <input type="submit" class="btn my-button w-100" role="button" id="save-vase" value="update"
+                    <input type="submit" class="btn my-button w-100 disabled" role="button" id="save-vase" value="save"
                       form="myForm" title="Updates current model">
                   </div>
                   <div class="col-6">
@@ -180,7 +180,7 @@
 
             <!-- INDEX Table -->
             <div class="container-fluid p-1" id="index-outer-container" style="display: none">
-              <div class="container-fluid text-center text-light">
+              <div class="container-fluid text-center text-light" id="index-list-container">
                 <h4>Load a vase</h4>
                 {% if current_user.is_authenticated %}
                   <select type="select" name="loadAccess" class="form-select select-size2" id="index-load-access">

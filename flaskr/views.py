@@ -14,7 +14,10 @@ home_bp = Blueprint('home', __name__,template_folder='templates')
 
 @home_bp.route('/', methods=['GET', 'POST'])
 def home():
+
     if not current_user.is_authenticated:
+        flash("Vases can be exported for printing from the right panel")
+        flash("Sliders can be adjusted with arrow keys")
         flash("Log in to save vases, press load to see public vases")
     return render_template('home.html')
 
@@ -40,10 +43,6 @@ def save():
         else:
             for subkey in value.keys():
                 value[subkey] = int(value[subkey])
-    try:
-        path = gen(vase_data)
-    except:
-        path = "/static/stl/default.stl"
 
     if current_user.is_authenticated:
         vase = db.session.scalars(db.select(Vase).filter_by(
@@ -66,13 +65,13 @@ def save():
             db.session.add(vase_mdl)
             db.session.commit()
     
-    return json.dumps(path)
+    return "Status OK"
 
 @home_bp.route('/getIndex', methods=['GET', 'POST'])
 def get_index():
+
     access = request.get_json()
     if current_user.is_authenticated:
-    # access = request.get_json()
         if access == "private":
             vases = db.session.scalars(db.select(Vase).filter_by(user_id =current_user.id)).all()
             data = [{"name" : elem.name,"user":current_user.username} \
@@ -106,24 +105,15 @@ def load():
         if vase:
             vase_data =  vase[0].data
             appearance = vase[0].appearance
-
-            print("vase reloaded")
-            print(vase[0])
-            print("Vase appearance",appearance)
-
-            path = gen(json.loads(vase_data))
         else:
-            print("default vase loaded")
             vase_data = default_vase()
             appearance = ""
-            path = gen(vase_data)
     else:
         vase_data = default_vase()
-        path = gen(vase_data)
         appearance = ""
         vase_data = json.dumps(vase_data) # Stringify vase data
 
-    return json.dumps([vase_data,appearance,path])
+    return json.dumps([vase_data,appearance])
 
 @home_bp.route('/deleteVase', methods=['GET', 'POST'])
 def delete():
@@ -144,7 +134,6 @@ def delete():
         print("user not logged in")
 
     vase_data = default_vase()
-    gen(vase_data)
 
     return json.dumps(vase_data)
 
@@ -156,7 +145,6 @@ def delete_file():
         path = "flaskr" + request.get_json()
         if path != "flaskr/static/stl/default.stl":
             os.remove(path)
-
         return json.dumps({"status" : "OK"})
     except:
         return json.dumps({"status" : "Conflict"})
@@ -166,6 +154,7 @@ def load_settings():
     return json.dumps(settings)
 
 def default_vase():
+
     return {
     "generic0" : {
         "height" : 60,

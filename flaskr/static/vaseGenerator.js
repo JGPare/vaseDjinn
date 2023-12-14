@@ -19,7 +19,6 @@ class Vase{
             radial.twist = parseFloat(radial.twist) / this.height 
             radial.phase = parseFloat(radial.phase) / 100
         })
-
         this.radials = radials
 
         verticals.forEach(vertical => {
@@ -33,23 +32,14 @@ class Vase{
 
 export function generateGeometry(vaseData)
 {
-    console.log(vaseData);
     const generic = {...vaseData.generic0, ...vaseData.generic1}
     const radials = vaseData.radial
     const verticals = vaseData.vertical
 
     const vase = new Vase(generic,radials,verticals)
-    let geometry;
-
-    if (vase.solid)
-    {
-        geometry = generateSolidGeometry(vase)
-    }
-    else
-    {
-        geometry = generateHollowGeometry(vase)
-    }
-    console.log(geometry);
+    
+    let geometry = vase.solid ? generateSolidGeometry(vase) : generateHollowGeometry(vase)
+   
     transformGeometry(geometry, vase)
 
     return geometry
@@ -140,8 +130,8 @@ function generateHollowGeometry(vase)
         )
 
     const insideGeometry = new THREE.CylinderGeometry( 
-        insideCylinderProperties.radiusBottom, // radius top and bottom flipped for scale inversion
         insideCylinderProperties.radiusTop,
+        insideCylinderProperties.radiusBottom, 
         insideCylinderProperties.height,
         insideCylinderProperties.radialSegments,
         insideCylinderProperties.heightSegments,
@@ -149,7 +139,8 @@ function generateHollowGeometry(vase)
         insideCylinderProperties.thetaStart,
         insideCylinderProperties.thetaLength
         )
-    insideGeometry.scale(-1,-1,-1)
+    insideGeometry.scale(-1,-1,-1) // fixes normals for inside surface
+    insideGeometry.rotateX(Math.PI) // fixes top and bottom orientation from scale
     insideGeometry.translate(0,vase.baseThickness/2,0)
 
     const upperGeometry = new THREE.RingGeometry(
@@ -184,7 +175,6 @@ function generateHollowGeometry(vase)
     outsideLowerGeometry.rotateY(-Math.PI/2)
     outsideLowerGeometry.translate(0,-vase.height/2,0)
 
-    console.log(insideGeometry);
     let geometry = BufferGeometryUtils.mergeGeometries([insideGeometry,outsideGeometry,upperGeometry, insideLowerGeometry, outsideLowerGeometry])
     geometry = BufferGeometryUtils.mergeVertices(geometry,1e-2)
     return geometry
@@ -192,7 +182,6 @@ function generateHollowGeometry(vase)
 
 function transformGeometry(geometry, vase)
 {
-    console.log(vase);
     var position = geometry.attributes.position
 
     for (var i = 0; i < position.count; i++){
