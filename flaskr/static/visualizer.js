@@ -8,6 +8,8 @@ import { STLExporter } from 'three/addons/exporters/STLExporter.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
 import { generateGeometry } from './vaseGenerator.js';
 
+import { incrementDownloads } from './main.js';
+
 let container;
 
 let camera, stats, cameraTarget, scene, renderer;
@@ -187,6 +189,7 @@ function exportASCII() {
 
     const result = exporter.parse( tempMesh );
     saveString( result, $("#inputName").val()+'.stl' );
+    incrementDownloads()
 
 }
 
@@ -198,6 +201,7 @@ function exportBinary() {
 
     const result = exporter.parse( tempMesh, { binary: true } );
     saveArrayBuffer( result, $("#inputName").val()+'.stl' );
+    incrementDownloads()
 
 }
 

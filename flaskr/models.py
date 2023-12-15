@@ -43,14 +43,16 @@ class Vase(db.Model):
     data = db.Column(db.String(512))
     appearance = db.Column(db.String(512))
     public = db.Column(db.Integer,index=True)
+    downloads = db.Column(db.Integer)
 
-    def __init__(self,user_id,name,data,appearance,public=0):
+    def __init__(self,user_id,name,data,appearance,public=0,downloads=0):
         self.user_id = user_id
         self.name = name
         self.data = data
         self.appearance = appearance
         self.public = public
         self.unique_name = f"{user_id}-{name}"
+        self.downloads = downloads
 
     def __repr__(self):
         return f"Vase: {self.name}"
@@ -60,6 +62,9 @@ class Vase(db.Model):
             self.public = 1
         elif access == "private":
             self.public = 0
+
+    def increment_downloads(self):
+        self.downloads += 1
 
 
 

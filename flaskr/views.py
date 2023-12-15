@@ -1,13 +1,12 @@
 import json
 
-from flask import render_template, url_for, flash, redirect, request, Blueprint
-from flask_login import login_user, current_user, logout_user
+from flask import render_template, flash, request, Blueprint
+from flask_login import current_user
 
 from flaskr import db
 from flaskr.models import User,Vase
-# from flaskr.auth.forms import RegistrationForm, LoginForm
 
-from .stl_generate import gen,settings
+from .stl_generate import settings
 import os
 
 home_bp = Blueprint('home', __name__,template_folder='templates')
@@ -49,7 +48,7 @@ def save():
             user_id = current_user.id,
             name=name)).all()
         if vase:
-            print("vase updated:")
+            print("vase updated",flush=True)
             vase[0].data = json.dumps(vase_data)
             vase[0].appearance = json.dumps(appearance)
             vase[0].set_access(access)
@@ -74,13 +73,17 @@ def get_index():
     if current_user.is_authenticated:
         if access == "private":
             vases = db.session.scalars(db.select(Vase).filter_by(user_id =current_user.id)).all()
-            data = [{"name" : elem.name,"user":current_user.username} \
+            data = [{"name" : elem.name,\
+                     "user":current_user.username,\
+                     "downloads": elem.downloads} 
                 for elem in vases]
         elif access == "public":
             users = db.session.scalars(db.select(User)).all()
             id_name_dict = {elem.id : elem.username for elem in users}
             vases = db.session.scalars(db.select(Vase).filter_by(public = 1)).all()
-            data = [{"name" : elem.name,"user":id_name_dict[elem.user_id]} \
+            data = [{"name" : elem.name,\
+                     "user":id_name_dict[elem.user_id],\
+                     "downloads": elem.downloads} 
                 for elem in vases]
         return json.dumps(data)
     else:
@@ -105,15 +108,19 @@ def load():
         if vase:
             vase_data =  vase[0].data
             appearance = vase[0].appearance
+            downloads = vase[0].downloads             
         else:
             vase_data = default_vase()
             appearance = ""
+            downloads = 0
     else:
         vase_data = default_vase()
         appearance = ""
+        downloads = 0
+
         vase_data = json.dumps(vase_data) # Stringify vase data
 
-    return json.dumps([vase_data,appearance])
+    return json.dumps([vase_data,appearance,downloads])
 
 @home_bp.route('/deleteVase', methods=['GET', 'POST'])
 def delete():
@@ -137,7 +144,33 @@ def delete():
 
     return json.dumps(vase_data)
 
+@home_bp.route('/incrementDownload', methods=['GET', 'POST'])
+def incrementDownloads():
 
+    data = request.get_json()
+    user_query = db.session.scalars(db.select(User).filter_by(\
+            username = data["username"])).all()
+    
+    if user_query:
+        user_id = user_query[0].id
+        vase = db.session.scalars(db.select(Vase).filter_by(\
+            user_id = user_id,\
+            name=data["name"])).all()
+    elif (current_user.is_authenticated):
+        user_id = current_user.id,
+        vase = db.session.scalars(db.select(Vase).filter_by(\
+            user_id = user_id,\
+            name=data["name"])).all()
+    if vase:
+        vase[0].increment_downloads()
+        db.session.commit()
+        print("vase downloads incremented",flush=True)
+    else:
+        print("vase not saved",flush=True)
+
+    return json.dumps("Status OK")
+
+# depreciated
 @home_bp.route('/deleteFile', methods=['GET', 'POST'])
 def delete_file():
 
@@ -198,4 +231,5 @@ def default_vase():
         # "phase" : 0,
         # },
         ],
+    "downloads" : 0
     }

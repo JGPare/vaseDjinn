@@ -2,12 +2,12 @@
 
 var settings;
 var tablesMade = false;
-const debug = false;
-
+const debug = true;
+let username = ""
 // index table
 var indexList;
 var startRow = 0;
-var displayNum = 11;
+var displayNum = 10;
 
 window.onload = init;
 
@@ -56,7 +56,7 @@ function setAllTables(vaseData){
 }
 
 function readTable(parentID){
-    // Loop through grabbing everything
+    // Loop through reading everything
     var myRows = [];
     const dataType = $("#" + parentID).attr("data");
     var $headers = $("#" + parentID + " > thead td");
@@ -193,7 +193,7 @@ function createTables(data) {
     for(var i = 0; i < radials.length; i++) {
         var row = table.insertRow(i);
         row.insertCell(0).innerHTML = "radial " + (i+1);
-        
+
         row.insertCell(1).appendChild(createRange(
             "r" + i + "_mag",
             radials[i].mag,
@@ -283,6 +283,7 @@ function createTables(data) {
 };
 
 function createIndexList(indexList,offsetDir=0){
+
     startRow += offsetDir*(displayNum-1);
     var endRow = startRow + displayNum;
     if (endRow > indexList.length ){
@@ -291,14 +292,15 @@ function createIndexList(indexList,offsetDir=0){
         startRow = 0;
     }
 
+    const indexHeaders = ["Vase Name","Creator","Downloads"]
+
     var table = document.createElement("TABLE");
-    table.setAttribute("class","table table-dark table-hover my-dark-table");
+    table.setAttribute("class","table table-dark table-hover my-dark-table text-center");
     table.setAttribute("id","index-table");
     table.setAttribute("data","index");
 
     var i = 0;
     if (startRow > 0){
-        // console.log(startRow+displayNum,indexList.length);
         var row = table.insertRow(0);
         row.setAttribute("style","width: 2rem; height: 2rem;");
         row.setAttribute("id","up-arrow-row");
@@ -313,32 +315,52 @@ function createIndexList(indexList,offsetDir=0){
         img.setAttribute("style","width: 2rem; height: 2rem;");
 
         button[0].appendChild(img);
-        row.insertCell(0).appendChild(button[0]); 
+        row.insertCell(0)
+        row.insertCell(1).appendChild(button[0]); 
+        row.insertCell(2)
         i++;
     }
     
     for(; i + startRow < endRow && i < displayNum; i++) {
 
         var row = table.insertRow(i);
-        var button = $("<a></a>");
+        var buttonName = $("<a></a>");
+        var buttonUser = $("<a></a>");
+        var buttonDownloads = $("<a></a>");
         var name = $("<p></p>");
         var user = $("<p></p>");
+        var downloads = $("<p></p>");
 
         name.attr("class","text-start mb-0");
         user.attr("class","text-end mb-0 text-secondary");
+        downloads.attr("class","text-end mb-0 text-secondary");
 
         name.text(indexList[i+startRow].name);
-        user.text("creator: "+indexList[i+startRow].user);
+        user.text(indexList[i+startRow].user);
+        downloads.text(indexList[i+startRow].downloads);
 
-        button.attr("data",JSON.stringify(indexList[i+startRow]));
+        buttonName.attr("data",JSON.stringify(indexList[i+startRow]));
+        buttonUser.attr("data",JSON.stringify(indexList[i+startRow]));
+        buttonDownloads.attr("data",JSON.stringify(indexList[i+startRow]));
+
         name.attr("data",JSON.stringify(indexList[i+startRow]));
         user.attr("data",JSON.stringify(indexList[i+startRow]));
 
-        button.attr("class","btn vaseLoader d-flex justify-content-between text-light h-100 w-100");
-        button.attr("id","vaseLoader");
-        button.append(name);
-        button.append(user);
-        row.insertCell(0).appendChild(button[0]); 
+        buttonName.attr("class","btn vaseLoader d-flex justify-content-center text-light h-100 w-100");
+        buttonName.attr("id","vaseLoader");
+        buttonUser.attr("class","btn vaseLoader d-flex justify-content-center text-light h-100 w-100");
+        buttonUser.attr("id","vaseLoader");
+        buttonDownloads.attr("class","btn vaseLoader d-flex justify-content-center text-light h-100 w-100");
+        buttonDownloads.attr("id","vaseLoader");
+
+        buttonName.append(name);
+        buttonUser.append(user);
+        buttonDownloads.append(downloads);
+
+        row.insertCell(0).appendChild(buttonName[0])
+        row.insertCell(1).appendChild(buttonUser[0])
+        row.insertCell(2).appendChild(buttonDownloads[0])
+
     };
 
     if (endRow != indexList.length){
@@ -355,7 +377,19 @@ function createIndexList(indexList,offsetDir=0){
         img.setAttribute("style","width: 2rem; height: 2rem;");
 
         button[0].appendChild(img);
-        row.insertCell(0).appendChild(button[0]); 
+
+        row.insertCell(0)
+        row.insertCell(1).appendChild(button[0]); 
+        row.insertCell(2)
+    };
+
+    var header = table.createTHead();
+    var headerRow = header.insertRow(0);
+    for(var i = 0; i < indexHeaders.length; i++) {
+        var headElem = document.createElement("td");
+        headElem.innerHTML = indexHeaders[i]
+        headElem.setAttribute("style","padding: 0.5rem")
+        headerRow.appendChild(headElem);
     };
 
     $("#index-container")[0].appendChild(table);
@@ -457,6 +491,7 @@ $('#myForm').submit(function(event) {
           console.log('vase saved');
         }
         $('input[name="height"]').focus()
+        username=""
     }).fail(function(data) {
     // Optionally alert the user of an error here...
     });
@@ -478,7 +513,9 @@ function loadSettings() {
     loadDefault();
       // console.log(settings);
     }).fail(function(data) {
-        console.log('failed to load settings');
+        if (debug){
+            console.log('failed to load settings');
+        }
     });
 };
 
@@ -496,12 +533,14 @@ function loadDefault(name="") {
         if (debug){
             console.log('loaded default vase');
         }
-        var [vaseData,appearance] = JSON.parse(data)
+        var [vaseData,appearance,downloads] = JSON.parse(data)
         vaseData = JSON.parse(vaseData);
         createTables(vaseData);
         update()
     }).fail(function(data) {
-      console.log('failed to load default');
+        if (debug){
+            console.log('failed to load default');
+        }
   });
 };
 
@@ -519,11 +558,15 @@ function getIndex(){
     }).done(function(data) {
         if (debug){
            console.log('indexes got');
+           console.log(data)
        }
        indexList = JSON.parse(data);
+       
        createIndexList(indexList);
     }).fail(function(data) {
-      console.log('failed to get indexes');
+        if (debug){
+            console.log('failed to get indexes');
+        }
     });
 }
 
@@ -542,16 +585,42 @@ function load(inputData="") {
         if (debug){
             console.log('loaded vase');
         }
-        var [vaseData,appearance] = JSON.parse(data);
+        var [vaseData,appearance,downloads] = JSON.parse(data);
         vaseData = JSON.parse(vaseData);
         appearance = JSON.parse(appearance);
+        vaseData.downloads = JSON.parse(downloads)
         setApperance(appearance);
         vaseData["name"] = JSON.parse(inputData).name
+        username = JSON.parse(inputData).user
         setAllTables(vaseData)
         update()
     }).fail(function(data) {
-      console.log('failed to load vase');
+        if (debug){
+            console.log('failed to load vase');
+        }
   });
+}
+
+export function incrementDownloads(){
+    const data = {
+        "name" : $("#input-name").val(),
+        "username" : username}
+    if (debug){
+        console.log('increment vase download attempt');
+    }
+    $.ajax({
+        type: "POST",
+        url: "incrementDownload",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        data: JSON.stringify(data),
+    }).done(function(data) {
+        if (debug){
+            console.log('deleted vase');
+        }
+    }).fail(function(data) {
+      // Optionally alert the user of an error here...
+    });
 }
 
 // delete function

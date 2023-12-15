@@ -1,9 +1,6 @@
 
 /* MEDIA QUERIES */
 
-
-
-/* Portrait tablets and small desktops */
 @media (max-width: 1100px) {
   body{
     min-width: 900px;
@@ -33,11 +30,12 @@
     margin: 0;
   }
   #index-container{
-    padding: 0rem 1rem 0rem 1rem !important;
+    padding: 0rem 0.5rem 0rem 0.5rem !important;
     margin: 0.5rem 0 0.5rem 0rem !important;  
+    border-radius: 0.5rem !important;
   }
   #index-list-container{
-    padding: 0rem 1rem 0rem 1rem !important;
+    padding: 0rem 0.5rem 0rem 0.5rem !important;
     margin: 0.5rem 0 0.5rem 0rem !important;  
   }
 
@@ -78,6 +76,7 @@ h1{
   border-radius: 1rem;
   /*  dard mode*/
   background-color: #1b2432;
+  margin-top: 0.5rem;
 /*  light mode*/
 /*  background-color: #fffbfa;*/
 }
@@ -85,9 +84,11 @@ h1{
 .my-alert {
   background-color: #39393a;
   border-color: #1b2432;
-  height: 3rem;
-  font-size: 1.1rem;
-  margin: .5rem;
+  height: 2.2rem;
+  font-size: medium;
+  margin: 0 0 0.3rem 0;
+  padding: 0.75rem;
+
 }
 
 .mygui {
@@ -180,16 +181,12 @@ h1{
 
 /*** Navigation Bar ***/
 .navbar{
-  /*  dard mode*/
   background-color: #1b2432;
-  /*  light mode*/
-/*  background-color: #cfdbd5;*/
-
   padding: 0rem 0rem 0rem 2rem;
   height:4rem;
   margin-bottom: 1rem;
-    
 }
+
 .navbar-dark .navbar-brand{
   font-family: "Open Sans";
   font-size: 2.5rem;

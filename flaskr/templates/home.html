@@ -69,7 +69,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
-              <ul class="navbar-nav me-auto mb-1">
+              <ul class="navbar-nav me-auto">
                 <li>
                   <h1> Vase Djinn </h1>
                 </li>
@@ -90,7 +90,7 @@
         {% for message in get_flashed_messages() %}
         <div class="my-alert alert alert-secondary alert-dismissible fade show py-auto mx-2" role="alert">
           <p class="text-light"> {{ message }} </p>
-          <button type="button" class="btn-close pt-2" data-bs-dismiss="alert" aria-label="Close"></button>
+          <button type="button" class="btn-close pb-1" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
 
@@ -195,7 +195,7 @@
                   </select>
 
                   <div class="container-fluid table-container mx-auto" id="index-container">
-
+                    
                   </div>
               </div>
               <div class="row">
