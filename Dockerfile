@@ -5,4 +5,4 @@ RUN apt-get update && apt-get install -y git
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 COPY . .
 ARG FLASK_APP=app.py 
-CMD ["gunicorn","-u","--bind","0.0.0.0:80","flaskr:create_app()"]
+CMD ["gunicorn","--bind","0.0.0.0:80","flaskr:create_app()"]
