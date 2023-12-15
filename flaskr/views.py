@@ -90,7 +90,9 @@ def get_index():
         users = db.session.scalars(db.select(User)).all()
         id_name_dict = {elem.id : elem.username for elem in users}
         vases = db.session.scalars(db.select(Vase).filter_by(public = 1)).all()
-        data = [{"name" : elem.name,"user":id_name_dict[elem.user_id]} \
+        data = [{"name" : elem.name,\
+                 "user":id_name_dict[elem.user_id], \
+                 "downloads": elem.downloads}
             for elem in vases]
         return json.dumps(data)
 
