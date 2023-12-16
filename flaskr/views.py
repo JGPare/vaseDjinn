@@ -72,7 +72,7 @@ def get_index():
     access = request.get_json()
     if current_user.is_authenticated:
         if access == "private":
-            vases = db.session.scalars(db.select(Vase).filter_by(user_id =current_user.id)).all()
+            vases = db.session.scalars(db.select(Vase).filter_by(user_id =current_user.id).order_by(Vase.downloads.desc())).all()
             data = [{"name" : elem.name,\
                      "user":current_user.username,\
                      "downloads": elem.downloads} 
@@ -80,7 +80,7 @@ def get_index():
         elif access == "public":
             users = db.session.scalars(db.select(User)).all()
             id_name_dict = {elem.id : elem.username for elem in users}
-            vases = db.session.scalars(db.select(Vase).filter_by(public = 1)).all()
+            vases = db.session.scalars(db.select(Vase).filter_by(public = 1).order_by(Vase.downloads.desc())).all()
             data = [{"name" : elem.name,\
                      "user":id_name_dict[elem.user_id],\
                      "downloads": elem.downloads} 
@@ -89,7 +89,7 @@ def get_index():
     else:
         users = db.session.scalars(db.select(User)).all()
         id_name_dict = {elem.id : elem.username for elem in users}
-        vases = db.session.scalars(db.select(Vase).filter_by(public = 1)).all()
+        vases = db.session.scalars(db.select(Vase).filter_by(public = 1).order_by(Vase.downloads.desc())).all()
         data = [{"name" : elem.name,\
                  "user":id_name_dict[elem.user_id], \
                  "downloads": elem.downloads}
