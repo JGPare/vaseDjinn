@@ -48,7 +48,7 @@ export function generateGeometry(vaseData)
 function generateSolidGeometry(vase)
 {
     const cylinderProperties = {
-        radiusTop : vase.width + vase.width*vase.slope,
+        radiusTop : Math.max(vase.width + vase.height*vase.slope, 0),
         radiusBottom : vase.width,
         height : vase.height,
         radialSegments : vase.radialSegments,
@@ -75,7 +75,7 @@ function generateSolidGeometry(vase)
 function generateHollowGeometry(vase)
 {
     const outsideCylinderProperties = {
-        radiusTop : vase.width + vase.width*vase.slope,
+        radiusTop : Math.max(vase.width + vase.height*vase.slope, 0),
         radiusBottom : vase.width,
         height : vase.height,
         radialSegments : vase.radialSegments,

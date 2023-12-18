@@ -3,7 +3,7 @@ from flask_login import login_user, current_user, logout_user
 
 from flaskr import db
 from flaskr.models import User
-from flaskr.auth.forms import RegistrationForm, LoginForm
+from flaskr.auth.forms import RegistrationForm, LoginForm, PasswordResetForm
 
 auth_bp = Blueprint('auth', __name__,template_folder='templates/auth')
 
@@ -57,6 +57,20 @@ def login():
 
     return render_template('login.html', form=form)
 
+
+@auth_bp.route('/resetPassword', methods=['GET', 'POST'])
+def resetPassword():
+
+    form = PasswordResetForm()
+    if form.validate_on_submit():
+
+        # Grab the user from our User Models table
+        user = User.query.filter_by(email=form.email.data).first()
+
+        if user is None:
+            flash("Email not found, please try again")
+
+    return render_template('passwordReset.html', form=form)
 
 @auth_bp.route("/logout")
 def logout():

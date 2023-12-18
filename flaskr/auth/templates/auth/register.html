@@ -16,7 +16,7 @@
             {{ form.hidden_tag() }}
 
             <div class="form-floating">
-               {{ form.email(class="form-control",  type="email",id="floatingEmail",placeholder="email",required=False) }}
+               {{ form.email(class="form-control top-input",  type="email",id="floatingEmail",placeholder="email",required=False) }}
               <label for="floatingEmail">{{ form.email.label }}</label>
             </div>
 
@@ -25,7 +25,7 @@
             {% endfor %}
 
             <div class="form-floating">
-               {{ form.username(class="form-control",  type="username",id="floatingUsername",placeholder="username",required=False) }}
+               {{ form.username(class="form-control middle-input",  type="username",id="floatingUsername",placeholder="username",required=False) }}
               <label for="floatingEmail">{{ form.username.label }}</label>
             </div>
 
@@ -34,7 +34,7 @@
             {% endfor %}
 
             <div class="form-floating">
-              {{ form.password(class="form-control", type="password",id="floatingPassword",placeholder="password",required=False) }}
+              {{ form.password(class="form-control bottom-input", type="password",id="floatingPassword",placeholder="password",required=False) }}
               <label for="floatingPassword">{{ form.password.label}}</label>
             </div>
 
@@ -43,7 +43,7 @@
             {% endfor %}
 
             <div class="form-floating">
-              {{ form.pass_confirm(class="form-control", type="password",id="floatingPassConfirm",placeholder="password",required=False) }}
+              {{ form.pass_confirm(class="form-control stand-alone-input", type="password",id="floatingPassConfirm",placeholder="password",required=False) }}
               <label for="floatingPassConfirm">{{ form.pass_confirm.label}}</label>
             </div>
 

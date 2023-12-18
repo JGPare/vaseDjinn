@@ -1,84 +1,83 @@
-
 /* MEDIA QUERIES */
 
 @media (max-width: 1100px) {
-  body{
+  body {
     min-width: 900px;
     background-color: #1b2432 !important;
   }
-  td{
+
+  td {
     font-size: smaller;
   }
-  p{
+
+  p {
     font-size: smaller;
   }
-  .nav-link{
+
+  .nav-link {
     font-size: medium !important;
   }
-  .my-container1{
+
+  .my-container1 {
     padding: 0 !important;
   }
-  .table-container{
+
+  .table-container {
     padding: 0rem 1rem 0rem 1rem !important;
     margin: 0.5rem 0 0.5rem 0rem !important;
   }
-  h1{
+
+  h1 {
     font-size: 2rem !important;
   }
-  #mynav{
+
+  #mynav {
     padding: 0;
     margin: 0;
   }
-  #index-container{
+
+  #index-container {
     padding: 0rem 0.5rem 0rem 0.5rem !important;
-    margin: 0.5rem 0 0.5rem 0rem !important;  
+    margin: 0.5rem 0 0.5rem 0rem !important;
     border-radius: 0.5rem !important;
   }
-  #index-list-container{
+
+  #index-list-container {
     padding: 0rem 0.5rem 0rem 0.5rem !important;
-    margin: 0.5rem 0 0.5rem 0rem !important;  
+    margin: 0.5rem 0 0.5rem 0rem !important;
   }
 
 }
 
-
-
-/* BOOTSTRAP TWEAKS */
-
 /*** GENERAL ***/
 
-body{
+body {
   font-family: 'Open Sans';
   font-size: 1rem;
   line-height: .75rem;
   font-weight: 400;
-  /*  dard mode*/
   background-color: #121420;
-
-  /*  light mode*/
-/*  background-color: #e8eddf;  */
-
 }
 
-h1{
+h1 {
   font-family: 'Open Sans';
   font-size: 2.6rem;
   font-weight: 800;
   color: #fca311;
 }
 
-#bootstrap-overrides select{
+#bootstrap-overrides select {
   background-color: #ced4da;
   height: 2.5rem;
 }
 
-.my-container1{
+.my-container1 {
   border-radius: 1rem;
   /*  dard mode*/
   background-color: #1b2432;
   margin-top: 0.5rem;
-/*  light mode*/
-/*  background-color: #fffbfa;*/
+  /*  light mode*/
+  /*  background-color: #fffbfa;*/
 }
 
 .my-alert {
@@ -100,13 +99,14 @@ h1{
 }
 
 .lead {
-  color : #fca311;
+  color: #fca311;
 }
+
 /************/
 
 /*** INDEX ***/
 
-#index-container{
+#index-container {
   padding: 0.5rem 0.5rem;
   margin: 1rem;
 }
@@ -118,17 +118,14 @@ h1{
 
 /*** HOME ***/
 
-.table-container{
+.table-container {
   border-radius: 1rem;
-  /*  dard mode*/
   background-color: #39393a;
   padding: 0rem 1rem 0rem 1rem;
   margin: 1rem 0rem;
-/*  light mode*/
-/*  background-color: #fffbfa;*/
 }
 
-.my-dark-table{
+.my-dark-table {
   --bs-table-bg: #39393a;
   --bs-table-striped-bg: #2c3034;
   --bs-table-striped-color: #fff;
@@ -136,14 +133,13 @@ h1{
   --bs-table-active-color: #fff;
   --bs-table-hover-bg: #505860;
   --bs-table-hover-color: #fff;
-  color : #ced4da;
+  color: #ced4da;
   margin-bottom: 0rem;
   table-layout: fixed;
 }
 
-.dark-input{
+.dark-input {
   border: 1px solid #39393a;
-/*  background-color: #39393a;*/
   background-color: #ced4da;
   height: 2.25rem;
   font-size: 1.2rem;
@@ -152,11 +148,12 @@ h1{
 .my-range::-webkit-slider-thumb {
   background: #fca311;
 }
+
 .my-range::-webkit-slider-thumb:active {
-    background-color: #433e3f;
+  background-color: #433e3f;
 }
 
-#bootstrap-overrides .name-label-container{
+#bootstrap-overrides .name-label-container {
   background-color: #433e3f;
   border-radius: 1rem 0rem 0rem 1rem;
   margin: -.5rem 0rem -.5rem 0rem;
@@ -169,8 +166,8 @@ h1{
 }
 
 #bootstrap-overrides .my-button {
-  color : #ced4da;
-  border-color: #39393a ;
+  color: #ced4da;
+  border-color: #39393a;
   background-color: #39393a;
   border-radius: 1rem;
   font-size: 1.2rem;
@@ -180,50 +177,58 @@ h1{
 /************/
 
 /*** Navigation Bar ***/
-.navbar{
+.navbar {
   background-color: #1b2432;
   padding: 0rem 0rem 0rem 2rem;
-  height:4rem;
+  height: 4rem;
   margin-bottom: 1rem;
 }
 
-.navbar-dark .navbar-brand{
+.navbar-dark .navbar-brand {
   font-family: "Open Sans";
   font-size: 2.5rem;
   color: #CFCFCF;
   text-align: center;
 }
 
-.nav-item{
+.nav-item {
   padding: 0 5px;
-    
+
 }
 
-.navbar-dark .nav-item .nav-link.active{
+.navbar-dark .nav-item .nav-link.active {
   font-size: 1.1rem;
   color: #ced4da;
   font-family: "Open Sans";
 }
 
-#main_logo{
+#main_logo {
   width: 4.5rem;
   height: 4.5rem;
 }
+
 /************/
 
-/*** LOG IN/REGISTER ***/
+/*** LOG IN/REGISTER/PASSWORD RESET ***/
 
-.form-log-reg{
-    font-size: .9rem;
+.form-log-reg {
+  font-size: .9rem;
 }
 
-#bootstrap-overrides .form-log-reg input[type="username"] {
-  margin-bottom: -1px;
-  background-color: #ced4da;
-  height: 45px;
+.text-link,
+a:hover {
+  color: #505860;
+  font-size: medium;
 }
 
-#bootstrap-overrides .form-log-reg input[type="email"] {
+.text-link,
+a:link {
+  color: #ced4da;
+  font-size: medium;
+}
+
+
+#bootstrap-overrides input.top-input {
   margin-bottom: -1px;
   background-color: #ced4da;
   border-bottom-right-radius: 0;
@@ -231,7 +236,14 @@ h1{
   height: 45px;
 }
 
-#bootstrap-overrides .form-log-reg input[type="password"] {
+#bootstrap-overrides input.middle-input {
+  margin-bottom: -1px;
+  background-color: #ced4da;
+  border-radius: 0;
+  height: 45px;
+}
+
+#bootstrap-overrides input.bottom-input {
   margin-bottom: 10px;
   background-color: #ced4da;
   border-top-right-radius: 0;
@@ -240,94 +252,92 @@ h1{
 
 }
 
-#bootstrap-overrides .form-log-reg input[type="pass_confirm"] {
+#bootstrap-overrides input.stand-alone-input {
   margin-bottom: 10px;
   background-color: #ced4da;
-  border-top-right-radius: 0;
-  border-top-left-radius: 0;
   height: 45px;
-
 }
 
-/************/
 
 /************/
 
-.index-button{
+/************/
+
+.index-button {
   padding: 0rem 0rem 0rem;
   background-color: #ffffff00;
   border-color: #ffffff00;
   text-align: left;
-    
+
 }
 
-.table_input{
+.table_input {
   border: 1px solid #ced4da;
   border-radius: 0.3rem;
 }
 
-.input_size1{
+.input_size1 {
   width: 6rem;
   height: 2rem;
 }
 
-.input_small{
+.input_small {
   width: 5rem;
   height: 0rem;
 }
 
-.input_size2{
+.input_size2 {
   width: 8rem;
   height: 2.5rem;
 }
 
-.input_size3{
+.input_size3 {
   width: 3rem;
   height: 2rem;
 }
 
-.select_size1{
+.select_size1 {
   width: 7rem;
   height: 2rem;
 }
 
-.select_size2{
+.select_size2 {
   width: 14rem;
   height: 2.5rem;
 }
 
-.radio_1{
-        list-style-type: none;
-        height: 1rem;
-        width: 3rem;
-     }
+.radio_1 {
+  list-style-type: none;
+  height: 1rem;
+  width: 3rem;
+}
 
-.my-button{
+.my-button {
   background-color: #fff;
   border-color: #cccccc;
   pointer-events: auto;
 }
-.my-button .disabled{
+
+.my-button .disabled {
   background-color: #fff;
   border-color: #cccccc;
-  pointer-events: auto !important;  
+  pointer-events: auto !important;
 }
 
-.white-box1{
+.white-box1 {
   border: 1px solid #ced4da;
   border-radius: 0.3rem;
   background-color: #fff;
   border-color: #cccccc;
 }
 
-.map-boxes{
+.map-boxes {
   height: 5rem;
 }
 
-.small-button{
+.small-button {
   height: 2rem;
   width: 2rem;
 }
 
 /************/
-

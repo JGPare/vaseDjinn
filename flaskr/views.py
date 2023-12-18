@@ -6,7 +6,6 @@ from flask_login import current_user
 from flaskr import db
 from flaskr.models import User,Vase
 
-from .stl_generate import settings
 import os
 
 home_bp = Blueprint('home', __name__,template_folder='templates')
@@ -54,7 +53,7 @@ def save():
             vase[0].set_access(access)
             db.session.commit()
         else:
-            print("new vase")
+            print("new vase",flush=True)
             vase_mdl = Vase(
                 user_id = current_user.id,
                 name = name,
@@ -112,11 +111,11 @@ def load():
             appearance = vase[0].appearance
             downloads = vase[0].downloads             
         else:
-            vase_data = default_vase()
+            vase_data = default_vase
             appearance = ""
             downloads = 0
     else:
-        vase_data = default_vase()
+        vase_data = default_vase
         appearance = ""
         downloads = 0
 
@@ -142,7 +141,7 @@ def delete():
     else:
         print("user not logged in")
 
-    vase_data = default_vase()
+    vase_data = default_vase
 
     return json.dumps(vase_data)
 
@@ -152,7 +151,7 @@ def incrementDownloads():
     data = request.get_json()
     user_query = db.session.scalars(db.select(User).filter_by(\
             username = data["username"])).all()
-    
+
     if user_query:
         user_id = user_query[0].id
         vase = db.session.scalars(db.select(Vase).filter_by(\
@@ -172,6 +171,10 @@ def incrementDownloads():
 
     return json.dumps("Status OK")
 
+@home_bp.route('/loadSettings', methods=['GET', 'POST'])
+def load_settings():
+    return json.dumps(settings)
+
 # depreciated
 @home_bp.route('/deleteFile', methods=['GET', 'POST'])
 def delete_file():
@@ -184,23 +187,19 @@ def delete_file():
     except:
         return json.dumps({"status" : "Conflict"})
 
-@home_bp.route('/loadSettings', methods=['GET', 'POST'])
-def load_settings():
-    return json.dumps(settings)
-
-def default_vase():
-
-    return {
+default_vase = {
     "generic0" : {
         "height" : 60,
         "width" : 20,
         "thickness" : 10,
      },
+
      "generic1" : {
         "radial_steps" : 50,
         "vertical_steps" : 50,
         "slope"  : 50,
      },
+
     "radial" : [
         { "mag" : 0,
         "freq" : 10,
@@ -211,12 +210,7 @@ def default_vase():
         "freq" : 10,
         "twist" : 0,
         "phase" : 0,
-        },
-        # { "mag" : 0,
-        # "freq" : 10,
-        # "twist" : 0,
-        # "phase" : 0,
-        # },
+        }
         ],
 
     "vertical" : [
@@ -227,11 +221,74 @@ def default_vase():
         { "mag" : 0,
         "freq" :  0,
         "phase" : 0,
+        }
+        ]
+}
+
+settings = {
+    "width" : {
+        "min" : 5,
+        "max" : 65,
+        "step" : 1,
         },
-        # { "mag" : 0,
-        # "freq" :  0,
-        # "phase" : 0,
-        # },
-        ],
-    "downloads" : 0
-    }
+    "height" : {
+        "min" : 5,
+        "max" : 100,
+        "step" : 1,
+        },
+    "thickness" : {
+        "min" : 1,
+        "max" : 100,
+        "step" : 1,
+        },
+    "slope" : {
+        "min" : 0,
+        "max" : 100,
+        "step" : 1,
+        },
+    "vertical_steps" : {
+        "min" : 3,
+        "max" : 150,
+        "step" : 1,
+        },
+    "radial_steps" : {
+        "min" : 4,
+        "max" : 150,
+        "step" : 1,
+        },
+    "radial_mag" : {
+        "min" : 0,
+        "max" : 500,
+        "step" : 5,
+        },
+    "radial_freq" : {
+        "min" : 0,
+        "max" : 30,
+        "step" : 1,
+        },
+    "radial_twist" : {
+        "min" : 0,
+        "max" : 40,
+        "step" : 1,
+        },
+    "radial_phase" : {
+        "min" : 0,
+        "max" : 100,
+        "step" : 1,
+        },
+    "vertical_mag" : {
+        "min" : 0,
+        "max" : 500,
+        "step" : 5,
+        },
+    "vertical_freq" : {
+        "min" : 0,
+        "max" : 100,
+        "step" : 1,
+        },
+    "vertical_phase" : {
+        "min" : 0,
+        "max" : 100,
+        "step" : 1,
+        },
+}

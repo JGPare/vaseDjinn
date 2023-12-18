@@ -14,6 +14,9 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     submit = SubmitField('Log In')
 
+class PasswordResetForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Reset')
 
 class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(message='Please enter valid email.'),Email(message='Please enter valid email.')])
