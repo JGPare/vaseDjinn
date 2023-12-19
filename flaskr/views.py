@@ -153,6 +153,8 @@ def increment_downloads():
     data = request.get_json()
     user_query = db.session.scalars(db.select(User).filter_by(\
             username = data["username"])).all()
+    
+    vase = False
 
     if user_query:
         user_id = user_query[0].id
