@@ -3,7 +3,9 @@ from flask_login import login_user, current_user, logout_user
 
 from flaskr import db
 from flaskr.models import User
-from flaskr.auth.forms import RegistrationForm, LoginForm, PasswordResetForm
+from flaskr.auth.forms import RegistrationForm, LoginForm, PasswordResetForm, PasswordResetVerifiedForm
+
+from flaskr.email import send_password_reset_email
 
 auth_bp = Blueprint('auth', __name__,template_folder='templates/auth')
 
@@ -59,18 +61,38 @@ def login():
 
 
 @auth_bp.route('/resetPassword', methods=['GET', 'POST'])
-def resetPassword():
+def reset_password():
 
     form = PasswordResetForm()
     if form.validate_on_submit():
 
-        # Grab the user from our User Models table
         user = User.query.filter_by(email=form.email.data).first()
-
-        if user is None:
+        
+        if user is not None:
+            send_password_reset_email(user)
+            return redirect(url_for('auth.login'))
+        else:
             flash("Email not found, please try again")
 
-    return render_template('passwordReset.html', form=form)
+    return render_template('password_reset.html', form=form)
+
+@auth_bp.route('/resetVerified/<token>', methods=['GET', 'POST'])
+def reset_verified(token):
+
+    user = User.verify_reset_token(token)
+    if not user:
+        print('no user found',flush=True)
+        return redirect(url_for('auth.login'))
+
+    form = PasswordResetVerifiedForm()
+    if form.validate_on_submit():
+        password = form.password.data
+        user.set_password(password)
+        db.session.commit()
+        flash("Password reset")
+        return redirect(url_for('auth.login'))
+
+    return render_template('reset_verified.html', form=form)
 
 @auth_bp.route("/logout")
 def logout():

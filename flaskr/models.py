@@ -1,6 +1,11 @@
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_login import UserMixin
 from datetime import datetime
+import os
+
+import jwt
+from time import time
+
 from flaskr import db, login_manager
 
 @login_manager.user_loader
@@ -25,9 +30,26 @@ class User(db.Model,UserMixin):
 
     def check_password(self,password):
         return check_password_hash(self.password_hash,password)
+    
+    def set_password(self,password):
+        self.password_hash = generate_password_hash(password)
+    
+    def get_reset_token(self, expires=500):
+        return jwt.encode({'reset_password': self.username, 'exp': time() + expires},
+                            key=str(os.getenv('SECRET_KEY_FLASK')), algorithm="HS256")
 
     def __repr__(self):
         return f"UserName: {self.username}"
+    
+    @staticmethod
+    def verify_reset_token(token):
+        try:
+            username = jwt.decode(token, key=str(os.getenv('SECRET_KEY_FLASK')), algorithms=["HS256"])['reset_password']
+            print(username,flush=True)
+        except Exception as e:
+            print(e)
+            return
+        return User.query.filter_by(username=username).first()
 
 
 class Vase(db.Model):

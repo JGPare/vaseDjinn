@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from dotenv import load_dotenv
 from flask_talisman import Talisman
+from flask_mail import Mail
 
 ###############################################################################
 ############################# INITIATE EXTENSIONS #############################
@@ -12,6 +13,7 @@ from flask_talisman import Talisman
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+mail = Mail()
 
 # this is the "app factory"
 def create_app(app_config=None):
@@ -43,6 +45,18 @@ def create_app(app_config=None):
     Migrate(app,db)
     Talisman(app,content_security_policy=None)
 
+###############################################################################
+################################# MAIL SETUPS #################################
+###############################################################################
+
+    app.config['MAIL_SERVER'] = 'mail.hover.com'
+    app.config['MAIL_PORT'] = 465
+    app.config['MAIL_USE_SSL'] = True
+    app.config['MAIL_USERNAME'] = os.getenv('SENDER_EMAIL')
+    app.config['MAIL_PASSWORD'] = os.getenv('SENDER_EMAIL_PASSWORD')
+    app.config['MAIL_USE_TLS'] = False 
+    mail.init_app(app)
+    
 ###############################################################################
 ################################ LOGIN CONFIGS ################################
 ###############################################################################

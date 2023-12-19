@@ -29,11 +29,11 @@
 <body id="bootstrap-overrides" class="h-100">
 
   <header>
-    <div class="container">
+    <div class="container my-2 py-2">
       {% for message in get_flashed_messages() %}
-      <div class="my-alert alert alert-secondary alert-dismissible fade show" role="alert">
-        <p> {{ message }} </p>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <div class="my-alert alert alert-secondary alert-dismissible fade show py-auto mx-2" role="alert">
+        <p class="text-light"> {{ message }} </p>
+        <button type="button" class="btn-close pb-1" data-bs-dismiss="alert" aria-label="Close"></button>
       </div>
       {% endfor %}
 

@@ -1,7 +1,7 @@
 
 
 let settings
-const debug = true
+const debug = false
 let username = ""
 
 // index table
@@ -284,7 +284,7 @@ function createTables(data) {
 function createIndexList(indexList, offsetDir = 0) {
 
     startRow += offsetDir * (displayNum - 1)
-    const endRow = startRow + displayNum
+    let endRow = startRow + displayNum
     if (endRow > indexList.length) {
         endRow = indexList.length
     } else if (startRow < 0) {

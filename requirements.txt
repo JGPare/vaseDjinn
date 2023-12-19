@@ -35,3 +35,5 @@ SQLAlchemy==2.0.15
 typing_extensions==4.6.1
 Werkzeug==2.3.4
 WTForms==3.0.1
+Flask-Mail==0.9.1
+PyJWT==2.8.0

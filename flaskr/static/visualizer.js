@@ -22,7 +22,7 @@ let vaseMesh;
 
 let params;
 let vaseColor = 0x560bad;
-let rotationSpeed = 0.8;
+let rotationSpeed = 0.5;
 
 const clock = new THREE.Clock()
 
@@ -55,7 +55,6 @@ export function addMesh(vaseData){
     
     const geometry = generateGeometry(vaseData)
     geometry.computeBoundingBox()
-    console.log(geometry.boundingBox);
     const material = new THREE.MeshPhongMaterial( { 
         color: vaseColor, 
         emissive: 0x000000,
@@ -165,7 +164,7 @@ function init() {
     const sceneFolder = gui.addFolder('Model');
     const exportFolder = gui.addFolder('Export');
 
-    sceneFolder.add( params, 'rotationSpeed',0,1,0.01).onFinishChange( 
+    sceneFolder.add( params, 'rotationSpeed',0,1.0,0.01).onFinishChange( 
         function (newRotationSpeed) {
             rotationSpeed = newRotationSpeed;
     });

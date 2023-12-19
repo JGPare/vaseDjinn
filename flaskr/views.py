@@ -6,6 +6,8 @@ from flask_login import current_user
 from flaskr import db
 from flaskr.models import User,Vase
 
+from flask_mail import Message
+
 import os
 
 home_bp = Blueprint('home', __name__,template_folder='templates')
@@ -124,7 +126,7 @@ def load():
     return json.dumps([vase_data,appearance,downloads])
 
 @home_bp.route('/deleteVase', methods=['GET', 'POST'])
-def delete():
+def delete_vase():
 
     name = request.get_json()
 
@@ -146,7 +148,7 @@ def delete():
     return json.dumps(vase_data)
 
 @home_bp.route('/incrementDownload', methods=['GET', 'POST'])
-def incrementDownloads():
+def increment_downloads():
 
     data = request.get_json()
     user_query = db.session.scalars(db.select(User).filter_by(\

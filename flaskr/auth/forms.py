@@ -18,6 +18,12 @@ class PasswordResetForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     submit = SubmitField('Reset')
 
+class PasswordResetVerifiedForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired(message='Please enter valid password.'), EqualTo('pass_confirm', message='Passwords must match!')])
+    pass_confirm = PasswordField('Confirm password', validators=[DataRequired(message='Please enter password again.')])
+
+    submit = SubmitField('Set Password')
+
 class RegistrationForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(message='Please enter valid email.'),Email(message='Please enter valid email.')])
     username = StringField('Username', validators=[DataRequired(message='Please enter valid username.')])
