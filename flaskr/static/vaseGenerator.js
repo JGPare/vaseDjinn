@@ -14,7 +14,7 @@ class Vase{
         this.solid = this.thickness == 1 ? true : false; 
 
         radials.forEach(radial => {
-            radial.mag = parseFloat(radial.mag)/ 100
+            radial.mag = parseFloat(radial.mag)/ 20
             radial.freq = parseFloat(radial.freq)
             radial.twist = parseFloat(radial.twist) / this.height 
             radial.phase = parseFloat(radial.phase) / 100
@@ -22,7 +22,7 @@ class Vase{
         this.radials = radials
 
         verticals.forEach(vertical => {
-            vertical.mag = parseFloat(vertical.mag)/ 100
+            vertical.mag = parseFloat(vertical.mag)/ 20
             vertical.freq = parseFloat(vertical.freq) / this.height 
             vertical.phase = parseFloat(vertical.phase) / 100
         })

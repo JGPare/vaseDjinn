@@ -159,3 +159,6 @@ cython_debug/
 
 # stls should be local
 *.stl
+
+# don't share the scripts 
+*scripts/*

@@ -18,16 +18,31 @@ function init() {
 import { removeMesh, addMesh, getApperance, setApperance } from './visualizer.js'
 
 function createRange(name, value = 50, min = 0, max = 100, step = 1) {
-    let range = document.createElement("INPUT")
-    range.setAttribute("class", "form-range my-range")
+    
+    let inputGroup = $("<div></div>")[0]
+    inputGroup.setAttribute("class","input-group")
+
+    let range = $("<input>")[0]
+    range.setAttribute("class", "form-range my-range form-control pe-1")
     range.setAttribute("type", "range")
-    range.setAttribute("value", value)
     range.setAttribute("name", name)
+    range.setAttribute("value", value)
     range.setAttribute("min", min)
     range.setAttribute("max", max)
     range.setAttribute("step", step)
 
-    return range
+    let appendDiv = $("<div></div>")[0]
+    appendDiv.setAttribute("class","input-group-append")
+    
+    let number = $("<span></span>").html(value.toString())[0]
+    number.setAttribute("class","input-group-text number-text")
+
+    appendDiv.appendChild(number)
+
+    inputGroup.appendChild(range)
+    inputGroup.appendChild(appendDiv)
+
+    return inputGroup
 }
 
 function readAllTables() {
@@ -100,7 +115,7 @@ function createTables(data) {
     const generic0Headers = ["height", "width", "thickness"]
     const generic0HeadersData = ["height", "width", "thickness"]
 
-    table = document.createElement("TABLE")
+    table = $("<table>")[0]
     table.setAttribute("class", "table table-dark table-hover my-dark-table text-center")
     table.setAttribute("id", "generic0-table")
     table.setAttribute("data", "generic")
@@ -184,7 +199,7 @@ function createTables(data) {
     const radialHeaders = ["modifier", "amount", "frequency", "twist", "phase"]
     const radialHeadersData = ["modifier", "mag", "freq", "twist", "phase"]
 
-    table = document.createElement("TABLE")
+    table = $("<table>")[0]
     table.setAttribute("class", "table table-dark table-hover my-dark-table text-center")
     table.setAttribute("id", "radial-table")
     table.setAttribute("data", "radial")
@@ -237,7 +252,7 @@ function createTables(data) {
     // vertical table
     const verticalHeaders = ["modifier", "amount", "frequency", "phase"]
     const verticalHeadersData = ["modifier", "mag", "freq", "phase"]
-    table = document.createElement("TABLE")  //makes a table element for the page
+    table = $("<table>")[0]
     table.setAttribute("class", "table table-dark table-hover my-dark-table text-center")
     table.setAttribute("id", "vertical-table")
     table.setAttribute("data", "vertical")
@@ -293,7 +308,7 @@ function createIndexList(indexList, offsetDir = 0) {
 
     const indexHeaders = ["Vase Name", "Creator", "Downloads"]
 
-    let table = document.createElement("TABLE")
+    let table = $("<table>")[0]
     table.setAttribute("class", "table table-dark table-hover my-dark-table text-center")
     table.setAttribute("id", "index-table")
     table.setAttribute("data", "index")
@@ -446,11 +461,13 @@ $(document).on("click", '#up-arrow-button', function (event) {
 })
 
 $(document).on("input", ".form-range", function (event) {
-    event.stopPropagation()
     if (debug) {
         console.log("slider change")
     }
+    let range = $(event.target)
+    setNumberText(range)
     update()
+    event.stopPropagation()
 })
 
 function update() {
@@ -459,6 +476,12 @@ function update() {
     addMesh(data)
 }
 
+function setNumberText(range) {
+    const rangeName = range.attr("name")
+
+    range.next("div").children("span").html(range.val())
+    
+}
 // AJAX FUNCTIONS //
 
 // save function

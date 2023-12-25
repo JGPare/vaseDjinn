@@ -262,8 +262,8 @@ settings = {
         },
     "radial_mag" : {
         "min" : 0,
-        "max" : 500,
-        "step" : 5,
+        "max" : 100,
+        "step" : 1,
         },
     "radial_freq" : {
         "min" : 0,
@@ -282,8 +282,8 @@ settings = {
         },
     "vertical_mag" : {
         "min" : 0,
-        "max" : 500,
-        "step" : 5,
+        "max" : 100,
+        "step" : 1,
         },
     "vertical_freq" : {
         "min" : 0,
