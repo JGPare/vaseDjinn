@@ -94,8 +94,10 @@ function setTable(parentID, data) {
     let $rows = $("#" + parentID + " > tbody tr ").each(function (index) {
         let $cells = $(this).find("td")
         $cells.each(function (cellIndex) {
-            const key = $($headers[cellIndex]).attr("data");
-            ($(this).find("input").val(data[index][key]))
+            const key = $($headers[cellIndex]).attr("data")
+            let range = $(this).find("input")
+            range.val(data[index][key])
+            setNumberText(range)
         })
     })
 }
@@ -478,9 +480,7 @@ function update() {
 
 function setNumberText(range) {
     const rangeName = range.attr("name")
-
     range.next("div").children("span").html(range.val())
-    
 }
 // AJAX FUNCTIONS //
 
