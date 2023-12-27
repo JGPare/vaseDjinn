@@ -40,11 +40,11 @@ default_vase = {
 settings = {
     "width" : {
         "min" : 5,
-        "max" : 65,
+        "max" : 55,
         "step" : 1,
         },
     "height" : {
-        "min" : 5,
+        "min" : 10,
         "max" : 100,
         "step" : 1,
         },

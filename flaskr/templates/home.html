@@ -158,22 +158,23 @@
               <div class="container-fluid p-1 pt-2">
                 <div class="row">
                   {% if current_user.is_authenticated %}
-                  <div class="col-6">
+                  <div class="col-4">
                     <input type="submit" class="btn my-button w-100" role="button" id="save-vase" value="save"
                       form="myForm" title="Save and update">
                   </div>
-                  <div class="col-6">
-                    <a class="btn my-button w-100" role="button" id="load-vase" href="">load</a>
-                  </div>
                   {% else %}
-                  <div class="col-6">
+                  <div class="col-4">
                     <input type="submit" class="btn my-button w-100 disabled" role="button" id="save-vase" value="save"
                       form="myForm" title="Updates current model">
                   </div>
-                  <div class="col-6">
+                  {% endif %}
+                  <div class="col-4">
+                    <a class="btn my-button w-100" role="button" id="load-random" href="">random</a>
+                  </div>
+                  <div class="col-4">
                     <a class="btn my-button w-100" role="button" id="load-vase" href="">load</a>
                   </div>
-                  {% endif %}
+                  
                 </div>
               </div>
             </form>

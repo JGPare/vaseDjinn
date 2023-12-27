@@ -429,6 +429,12 @@ $("#load-vase").on("click", function (event) {
     $("#index-outer-container").toggle()
 })
 
+$("#load-random").on("click", function (event) {
+    event.preventDefault()
+    event.stopPropagation()
+    loadRandom()
+})
+
 $(document).on("change", "#index-load-access", function (event) {
     event.stopPropagation()
     $("#index-table").remove()
@@ -609,6 +615,37 @@ function load(inputData = "") {
         setApperance(appearance)
         vaseData["name"] = JSON.parse(inputData).name
         username = JSON.parse(inputData).user
+        setAllTables(vaseData)
+        update()
+    }).fail(function (data) {
+        if (debug) {
+            console.log('failed to load vase')
+        }
+    })
+}
+
+function loadRandom() {
+    if (debug) {
+        console.log('load random attempt')
+    }
+    $.ajax({
+        type: "GET",
+        url: "loadRandom",
+        contentType: "application/json; charset=utf-8",
+        traditional: true
+    }).done(function (data) {
+        if (debug) {
+            console.log('loaded random vase')
+        }
+        let [vaseData, appearance, downloads] = JSON.parse(data)
+
+        vaseData = JSON.parse(vaseData)
+        appearance = JSON.parse(appearance)
+        vaseData.downloads = JSON.parse(downloads)
+
+        // setApperance(appearance)
+        vaseData["name"] = $("#input-name").val()
+        username = ""
         setAllTables(vaseData)
         update()
     }).fail(function (data) {

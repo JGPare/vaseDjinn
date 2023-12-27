@@ -8,6 +8,7 @@ from flaskr.models import User,Vase
 
 from .settings import default_vase, settings
 from .processing import string_dict_to_int_dict
+from .random_vase import random_vase_data
 
 from flask_mail import Message
 
@@ -155,3 +156,13 @@ def increment_downloads():
 def load_settings():
     return json.dumps(settings)
 
+@home_bp.route('loadRandom', methods=['GET'])
+def random_vase():
+
+    vase_data = random_vase_data()
+    print(vase_data,flush=True)
+    appearance = "0"
+    downloads = 0
+    vase_data = json.dumps(vase_data) 
+
+    return json.dumps([vase_data,appearance,downloads])
