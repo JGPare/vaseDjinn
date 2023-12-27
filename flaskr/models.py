@@ -7,6 +7,7 @@ import jwt
 from time import time
 
 from flaskr import db, login_manager
+from flask_login import current_user
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -51,6 +52,9 @@ class User(db.Model,UserMixin):
             return
         return User.query.filter_by(username=username).first()
 
+    @staticmethod
+    def get_all_users():
+        return db.session.scalars(db.select(User)).all()
 
 class Vase(db.Model):
 
@@ -88,5 +92,33 @@ class Vase(db.Model):
     def increment_downloads(self):
         self.downloads += 1
 
+    @staticmethod
+    def get_by_name(name):
+        return Vase.get_by_name_and_id(name,current_user.id)
 
+    @staticmethod
+    def get_by_name_and_id(name,id):
+        return db.session.scalars(db.select(Vase).filter_by(\
+            user_id = id,
+            name = name)).first()
 
+    @staticmethod
+    def get_by_name_and_username(name,username):
+        user = db.session.scalars(db.select(User).filter_by(\
+            username = username)).first()
+        if user:
+            return Vase.get_by_name_and_id(name,user.id)
+        else:
+            return False
+
+    @staticmethod
+    def get_all_private_vases():
+        return db.session.scalars(db.select(Vase).filter_by(\
+            user_id = current_user.id).order_by(\
+            Vase.downloads.desc())).all()
+    
+    @staticmethod
+    def get_all_public_vases():
+        return db.session.scalars(db.select(Vase).filter_by(\
+            public = 1).order_by(\
+            Vase.downloads.desc())).all()

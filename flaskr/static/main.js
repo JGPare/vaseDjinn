@@ -621,7 +621,7 @@ function load(inputData = "") {
 export function incrementDownloads() {
     const data = {
         "name": $("#input-name").val(),
-        "username": username
+        "user": username
     }
     if (debug) {
         console.log('increment vase download attempt')
