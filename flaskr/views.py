@@ -160,7 +160,6 @@ def load_settings():
 def random_vase():
 
     vase_data = random_vase_data()
-    print(vase_data,flush=True)
     appearance = "0"
     downloads = 0
     vase_data = json.dumps(vase_data) 
