@@ -18,9 +18,9 @@ function init() {
 import { setVase, transitionVase, getApperance, setApperance, transistionApperance } from './visualizer.js'
 
 function createRange(name, value = 50, min = 0, max = 100, step = 1) {
-    
+
     let inputGroup = $("<div></div>")[0]
-    inputGroup.setAttribute("class","input-group")
+    inputGroup.setAttribute("class", "input-group")
 
     let range = $("<input>")[0]
     range.setAttribute("class", "form-range my-range form-control pe-1")
@@ -32,10 +32,10 @@ function createRange(name, value = 50, min = 0, max = 100, step = 1) {
     range.setAttribute("step", step)
 
     let appendDiv = $("<div></div>")[0]
-    appendDiv.setAttribute("class","input-group-append")
-    
+    appendDiv.setAttribute("class", "input-group-append")
+
     let number = $("<span></span>").html(value.toString())[0]
-    number.setAttribute("class","input-group-text number-text")
+    number.setAttribute("class", "input-group-text number-text")
 
     appendDiv.appendChild(number)
 
@@ -483,7 +483,7 @@ function update() {
     setVase(data)
 }
 
-function transition(){
+function transition() {
     const data = readAllTables()
     transitionVase(data)
 }
@@ -518,8 +518,8 @@ $('#myForm').submit(function (event) {
         $('input[name="height"]').focus()
         username = ""
     }).fail(function (data) {
-        if (debug){
-            console.log("Save attempt failed.");
+        if (debug) {
+            console.log("Save attempt failed.")
         }
     })
 })
@@ -678,8 +678,8 @@ export function incrementDownloads() {
             console.log('deleted vase')
         }
     }).fail(function (data) {
-        if (debug){
-            console.log("Increment downloads failed");
+        if (debug) {
+            console.log("Increment downloads failed")
         }
     })
 }
@@ -705,8 +705,8 @@ function deleteVase(name = "") {
         setAllTables(vaseData)
         update()
     }).fail(function (data) {
-        if (debug){
-            console.log("Delete attempt failed.");
+        if (debug) {
+            console.log("Delete attempt failed.")
         }
     })
 };
