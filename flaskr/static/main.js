@@ -15,7 +15,7 @@ function init() {
     loadSettings()
 }
 
-import { removeMesh, addMesh, getApperance, setApperance } from './visualizer.js'
+import { quickAddVase, transitionAddVase, getApperance, setApperance, transistionApperance } from './visualizer.js'
 
 function createRange(name, value = 50, min = 0, max = 100, step = 1) {
     
@@ -480,8 +480,12 @@ $(document).on("input", ".form-range", function (event) {
 
 function update() {
     const data = readAllTables()
-    removeMesh()
-    addMesh(data)
+    quickAddVase(data)
+}
+
+function transition(){
+    const data = readAllTables()
+    transitionAddVase(data)
 }
 
 function setNumberText(range) {
@@ -612,11 +616,11 @@ function load(inputData = "") {
         appearance = JSON.parse(appearance)
         vaseData.downloads = JSON.parse(downloads)
 
-        setApperance(appearance)
+        transistionApperance(appearance)
         vaseData["name"] = JSON.parse(inputData).name
         username = JSON.parse(inputData).user
         setAllTables(vaseData)
-        update()
+        transition()
     }).fail(function (data) {
         if (debug) {
             console.log('failed to load vase')

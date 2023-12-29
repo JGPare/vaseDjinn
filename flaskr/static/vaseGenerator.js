@@ -1,42 +1,98 @@
 import * as THREE from 'three'
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
+let currentVase;
+
 class Vase{
-    constructor(generic,radials,verticals){
-        this.height = parseFloat(generic["height"])
-        this.width = parseFloat(generic["width"])
-        this.heightSegments = parseInt(generic["vertical_steps"])
-        this.radialSegments = parseInt(generic["radial_steps"])
-        this.slope = parseFloat(generic["slope"])
-        this.slope = Math.PI/4*(this.slope/100 - 0.5)
-        this.thickness = parseFloat(generic["thickness"])/100
+    constructor(params){
+        this.height = params.height
+        this.width = params.width
+        this.heightSegments = params.heightSegments
+        this.radialSegments = params.radialSegments
+        this.slope = params.slope
+        this.thickness = params.thickness
+        this.radials = params.radials
+        this.verticals = params.verticals
+        
         this.baseThickness = this.width/2*this.thickness
-        this.solid = this.thickness == 1 ? true : false; 
+        this.solid = this.thickness == 1 ? true : false
+    }
+    static createFromObjects(generic,radials,verticals) {
+        let params = {
+            height : parseFloat(generic.height),
+            width : parseFloat(generic.width),
+            heightSegments : parseInt(generic.vertical_steps),
+            radialSegments : parseInt(generic.radial_steps),
+            slope : Math.PI/4*(parseFloat(generic.slope)/100 - 0.5),
+            thickness : parseFloat(generic.thickness)/100,
+        }
 
         radials.forEach(radial => {
             radial.mag = parseFloat(radial.mag)/ 20
             radial.freq = parseFloat(radial.freq)
-            radial.twist = parseFloat(radial.twist) / this.height 
+            radial.twist = parseFloat(radial.twist) / params.height 
             radial.phase = parseFloat(radial.phase) / 100
         })
-        this.radials = radials
+        params.radials = radials
 
         verticals.forEach(vertical => {
             vertical.mag = parseFloat(vertical.mag)/ 20
-            vertical.freq = parseFloat(vertical.freq) / this.height 
+            vertical.freq = parseFloat(vertical.freq) / params.height 
             vertical.phase = parseFloat(vertical.phase) / 100
         })
-        this.verticals = verticals
+        params.verticals = verticals
+        return new Vase(params)
     }
 }
 
-export function generateGeometry(vaseData)
-{
+export function mergeVases(baseVase,newVase,amountNew){
+    
+    let radials = []
+    for (let index = 0; index < baseVase.radials.length; index++) {
+        radials.push({
+            mag   : baseVase.radials[index].mag*(1-amountNew) + newVase.radials[index].mag*amountNew,
+            freq  : baseVase.radials[index].freq*(1-amountNew) + newVase.radials[index].freq*amountNew,
+            twist : baseVase.radials[index].twist*(1-amountNew) + newVase.radials[index].twist*amountNew,
+            phase : baseVase.radials[index].phase*(1-amountNew) + newVase.radials[index].phase*amountNew,
+        })
+    }
+    let verticals = []
+    for (let index = 0; index < baseVase.radials.length; index++) {
+        verticals.push({
+            mag   : baseVase.verticals[index].mag*(1-amountNew) + newVase.verticals[index].mag*amountNew,
+            freq  : baseVase.verticals[index].freq*(1-amountNew) + newVase.verticals[index].freq*amountNew,
+            phase : baseVase.verticals[index].phase*(1-amountNew) + newVase.verticals[index].phase*amountNew,
+        })
+    }
+    let heightSegments = parseInt(baseVase.heightSegments*(1-amountNew) + newVase.heightSegments*amountNew)
+    let radialSegments = parseInt(baseVase.radialSegments*(1-amountNew) + newVase.radialSegments*amountNew)
+
+    heightSegments = Math.min(heightSegments,50)
+    radialSegments = Math.min(radialSegments,50)
+
+    let params = {
+        height : baseVase.height*(1-amountNew) + newVase.height*amountNew,
+        width : baseVase.width*(1-amountNew) + newVase.width*amountNew,
+        heightSegments : heightSegments,
+        radialSegments : radialSegments,
+        slope : baseVase.slope*(1-amountNew) + newVase.slope*amountNew,
+        thickness : baseVase.thickness*(1-amountNew) + newVase.thickness*amountNew,
+        radials : radials,
+        verticals : verticals,
+    }
+    return new Vase(params)
+}
+
+export function generateVase(vaseData){
     const generic = {...vaseData.generic0, ...vaseData.generic1}
     const radials = vaseData.radial
     const verticals = vaseData.vertical
 
-    const vase = new Vase(generic,radials,verticals)
+    return Vase.createFromObjects(generic,radials,verticals)
+}
+
+export function generateGeometry(vase)
+{
     
     let geometry = vase.solid ? generateSolidGeometry(vase) : generateHollowGeometry(vase)
    

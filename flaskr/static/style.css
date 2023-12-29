@@ -13,6 +13,10 @@
   p {
     font-size: smaller;
   }
+  .number-text{
+    font-size: 0.65rem !important;
+    width: 1.2rem !important;
+  }
 
   .nav-link {
     font-size: medium !important;

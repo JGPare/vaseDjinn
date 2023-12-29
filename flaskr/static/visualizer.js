@@ -6,7 +6,7 @@ import Stats from 'three/addons/libs/stats.module.js';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js';
 import { STLExporter } from 'three/addons/exporters/STLExporter.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-import { generateGeometry } from './vaseGenerator.js';
+import { generateGeometry, generateVase, mergeVases } from './vaseGenerator.js';
 
 import { incrementDownloads } from './main.js';
 
@@ -22,9 +22,18 @@ let vaseMesh;
 
 let params;
 let vaseColor = 0x560bad;
+let previousVaseColor;
 let rotationSpeed = 0.5;
 
-const clock = new THREE.Clock()
+// transistion
+const transistionDelay = 15
+const elapsedMax = 1/30
+let transitionIndex;
+let currentVase;
+let previousVase;
+
+const renderClock = new THREE.Clock()
+const transitionClock = new THREE.Clock()
 
 let scale = 0.02;
 
@@ -43,17 +52,47 @@ export function removeMesh(){
 }
 
 export function setApperance(color){
-    vaseColor = Number(color);
-    vaseMesh.material.color.setHex(vaseColor);
+    vaseColor = Number(color)
+    updateColor(vaseColor)
 }
 
+export function transistionApperance(color){
+    previousVaseColor = vaseColor
+    vaseColor = Number(color)
+    // console.log(previousVaseColor);
+    // console.log(vaseColor);
+}
 export function getApperance(){
     return vaseMesh.material.color.getHex();
 }
 
-export function addMesh(vaseData){
-    
-    const geometry = generateGeometry(vaseData)
+export function quickAddVase(vaseData){
+    currentVase = generateVase(vaseData)
+    if (vaseMesh){
+        updateGeometry(currentVase)
+    } else {
+        addMesh(currentVase)
+    }
+}
+
+export function transitionAddVase(vaseData){
+    previousVase = currentVase
+    currentVase = generateVase(vaseData)
+    transitionIndex = 0
+}
+
+function updateColor(color){
+    vaseMesh.material.color.setHex(color)
+}
+
+function updateGeometry(vase){
+    vaseMesh.geometry = generateGeometry(vase)
+    vaseMesh.geometry.computeBoundingBox()
+    vaseMesh.position.set( 0, scale*-vaseMesh.geometry.boundingBox.min.y, 0);
+}
+
+function addMesh(vase){
+    const geometry = generateGeometry(vase)
     geometry.computeBoundingBox()
     const material = new THREE.MeshPhongMaterial( { 
         color: vaseColor, 
@@ -262,19 +301,48 @@ function onWindowResize() {
     camera.updateProjectionMatrix();
 
     renderer.setSize( WIDTH, HEIGHT );
-
 }
 
 function animate() {
 
     requestAnimationFrame( animate );
-    render();
+    render()
 
+    const elapsed = transitionClock.getElapsedTime()
+    if (transitionIndex < transistionDelay && elapsed > elapsedMax){
+        transistionVase()
+        transistionColor()
+    }
+}
+
+function transistionVase(){
+
+    transitionIndex++
+    if (transitionIndex != transistionDelay){
+        const vase = mergeVases(previousVase,currentVase,transitionIndex/transistionDelay)
+        updateGeometry(vase)
+    } else {
+        updateGeometry(currentVase)
+    }
+    transitionClock.start()
+    
+}
+
+function transistionColor(){
+    const amountNew = transitionIndex/transistionDelay
+
+    const r = ((vaseColor>>16)&255)*amountNew + ((previousVaseColor>>16)&255)*(1 - amountNew)
+    const g = ((vaseColor>>8)&255)*amountNew + ((previousVaseColor>>8)&255)*(1 - amountNew)
+    const b = (vaseColor&255)*amountNew + (previousVaseColor&255)*(1 - amountNew)
+
+    const color = (r<<16) + (g<<8) + b
+
+    updateColor(color)
 }
 
 function render() {
 
-    const elapsedTime = clock.getElapsedTime()
+    const elapsedTime = renderClock.getElapsedTime()
 
     if ( vaseMesh ) {
         vaseMesh.rotation.y = elapsedTime * rotationSpeed;
