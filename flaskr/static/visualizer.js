@@ -26,7 +26,7 @@ let previousVaseColor;
 let rotationSpeed = 0.5;
 
 // transistion
-const transistionDelay = 15
+const transistionDelay = 10
 const elapsedMax = 1/30
 let transitionIndex;
 let currentVase;
@@ -59,14 +59,12 @@ export function setApperance(color){
 export function transistionApperance(color){
     previousVaseColor = vaseColor
     vaseColor = Number(color)
-    // console.log(previousVaseColor);
-    // console.log(vaseColor);
 }
 export function getApperance(){
     return vaseMesh.material.color.getHex();
 }
 
-export function quickAddVase(vaseData){
+export function setVase(vaseData){
     currentVase = generateVase(vaseData)
     if (vaseMesh){
         updateGeometry(currentVase)
@@ -75,7 +73,7 @@ export function quickAddVase(vaseData){
     }
 }
 
-export function transitionAddVase(vaseData){
+export function transitionVase(vaseData){
     previousVase = currentVase
     currentVase = generateVase(vaseData)
     transitionIndex = 0

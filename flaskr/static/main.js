@@ -15,7 +15,7 @@ function init() {
     loadSettings()
 }
 
-import { quickAddVase, transitionAddVase, getApperance, setApperance, transistionApperance } from './visualizer.js'
+import { setVase, transitionVase, getApperance, setApperance, transistionApperance } from './visualizer.js'
 
 function createRange(name, value = 50, min = 0, max = 100, step = 1) {
     
@@ -480,12 +480,12 @@ $(document).on("input", ".form-range", function (event) {
 
 function update() {
     const data = readAllTables()
-    quickAddVase(data)
+    setVase(data)
 }
 
 function transition(){
     const data = readAllTables()
-    transitionAddVase(data)
+    transitionVase(data)
 }
 
 function setNumberText(range) {
