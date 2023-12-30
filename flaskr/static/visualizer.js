@@ -221,24 +221,28 @@ function init() {
 
 function exportASCII() {
 
-    const tempMesh = new THREE.Mesh(vaseMesh.geometry, vaseMesh.material)
+    const tempMesh = new THREE.Mesh( vaseMesh.geometry, vaseMesh.material );
+    tempMesh.scale.set(1/scale, 1/scale, 1/scale)
 
-    tempMesh.scale.set(1 / scale, 1 / scale, 1 / scale)
-
+    tempMesh.geometry.rotateX(Math.PI/2)
     const result = exporter.parse(tempMesh)
-    saveString(result, $("#inputName").val() + '.stl')
+    tempMesh.geometry.rotateX(-Math.PI/2)
+
+    saveString(result, $("#input-name").val() + '.stl')
     incrementDownloads()
 
 }
 
 function exportBinary() {
 
-    const tempMesh = new THREE.Mesh(vaseMesh.geometry, vaseMesh.material)
+    const tempMesh = new THREE.Mesh( vaseMesh.geometry, vaseMesh.material );
+    tempMesh.scale.set(1/scale, 1/scale, 1/scale)
 
-    tempMesh.scale.set(1 / scale, 1 / scale, 1 / scale)
-
+    tempMesh.geometry.rotateX(Math.PI/2)
     const result = exporter.parse(tempMesh, { binary: true })
-    saveArrayBuffer(result, $("#inputName").val() + '.stl')
+    tempMesh.geometry.rotateX(-Math.PI/2)
+
+    saveArrayBuffer(result, $("#input-name").val() + '.stl')
     incrementDownloads()
 
 }
