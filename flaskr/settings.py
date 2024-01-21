@@ -75,12 +75,12 @@ settings = {
         },
     "radial_freq" : {
         "min" : 0,
-        "max" : 30,
+        "max" : 50,
         "step" : 1,
         },
     "radial_twist" : {
         "min" : 0,
-        "max" : 40,
+        "max" : 80,
         "step" : 1,
         },
     "radial_phase" : {

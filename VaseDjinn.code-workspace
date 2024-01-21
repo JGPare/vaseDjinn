@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../Projects/three-js-journey"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	}
+}
