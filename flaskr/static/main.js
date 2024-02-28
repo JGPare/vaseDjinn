@@ -670,7 +670,7 @@ export function incrementDownloads() {
         data: JSON.stringify(data),
     }).done(function (data) {
         if (debug) {
-            console.log('deleted vase')
+            console.log('increment vase')
         }
     }).fail(function (data) {
         if (debug) {

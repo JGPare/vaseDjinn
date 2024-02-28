@@ -132,6 +132,10 @@ def increment_downloads():
     data = request.get_json()
     vase = False
 
+    # increment dummy vase for total download count
+    dummy_vase = Vase.get_by_name_and_username("dummy","jules")
+    dummy_vase.increment_downloads()
+
     if data:
         name = data["name"]
         username = data["user"]
@@ -141,16 +145,17 @@ def increment_downloads():
         if not vase and current_user.is_authenticated:
             vase = Vase.get_by_name(name)
 
+    status = "Status OK"
+    
     if vase:
         vase.increment_downloads()
-        db.session.commit()
         print("vase downloads incremented",flush=True)
-        return json.dumps("Status OK")
     else:
         print("vase not incremented",flush=True)
-        return json.dumps("Status Failed")
+        status = "Status Failed"
 
-    
+    db.session.commit()
+    return json.dumps(status)
 
 @home_bp.route('/loadSettings', methods=['GET', 'POST'])
 def load_settings():
