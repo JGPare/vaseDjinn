@@ -25,15 +25,9 @@ let vaseColor = 0x560bad
 let previousVaseColor
 let rotationSpeed = 0.5
 
-// transistion
-const transistionDelay = 10
-const elapsedMax = 1 / 30
-let transitionIndex
 let currentVase
-let previousVase
 
 const renderClock = new THREE.Clock()
-const transitionClock = new THREE.Clock()
 
 let scale = 0.02
 
@@ -73,18 +67,14 @@ export function setVase(vaseData) {
     }
 }
 
-export function transitionVase(vaseData) {
-    previousVase = currentVase
-    currentVase = generateVase(vaseData)
-    transitionIndex = 0
-}
-
 function updateColor(color) {
     vaseMesh.material.color.setHex(color)
 }
 
 function updateGeometry(vase) {
+    const prevGeometry = vaseMesh.geometry
     vaseMesh.geometry = generateGeometry(vase)
+    prevGeometry.dispose()
     vaseMesh.geometry.computeBoundingBox()
     vaseMesh.position.set(0, scale * -vaseMesh.geometry.boundingBox.min.y, 0)
 }
@@ -311,37 +301,6 @@ function animate() {
 
     requestAnimationFrame(animate)
     render()
-
-    const elapsed = transitionClock.getElapsedTime()
-    if (transitionIndex < transistionDelay && elapsed > elapsedMax) {
-        transistionVase()
-        transistionColor()
-    }
-}
-
-function transistionVase() {
-
-    transitionIndex++
-    if (transitionIndex != transistionDelay) {
-        const vase = mergeVases(previousVase, currentVase, transitionIndex / transistionDelay)
-        updateGeometry(vase)
-    } else {
-        updateGeometry(currentVase)
-    }
-    transitionClock.start()
-
-}
-
-function transistionColor() {
-    const amountNew = transitionIndex / transistionDelay
-
-    const r = ((vaseColor >> 16) & 255) * amountNew + ((previousVaseColor >> 16) & 255) * (1 - amountNew)
-    const g = ((vaseColor >> 8) & 255) * amountNew + ((previousVaseColor >> 8) & 255) * (1 - amountNew)
-    const b = (vaseColor & 255) * amountNew + (previousVaseColor & 255) * (1 - amountNew)
-
-    const color = (r << 16) + (g << 8) + b
-
-    updateColor(color)
 }
 
 function render() {

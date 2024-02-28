@@ -15,7 +15,7 @@ function init() {
     loadSettings()
 }
 
-import { setVase, transitionVase, getApperance, setApperance, transistionApperance } from './visualizer.js'
+import { setVase, getApperance, setApperance } from './visualizer.js'
 
 function createRange(name, value = 50, min = 0, max = 100, step = 1) {
 
@@ -483,11 +483,6 @@ function update() {
     setVase(data)
 }
 
-function transition() {
-    const data = readAllTables()
-    transitionVase(data)
-}
-
 function setNumberText(range) {
     const rangeName = range.attr("name")
     range.next("div").children("span").html(range.val())
@@ -616,11 +611,11 @@ function load(inputData = "") {
         appearance = JSON.parse(appearance)
         vaseData.downloads = JSON.parse(downloads)
 
-        transistionApperance(appearance)
+        setApperance(appearance)
         vaseData["name"] = JSON.parse(inputData).name
         username = JSON.parse(inputData).user
         setAllTables(vaseData)
-        transition()
+        update()
     }).fail(function (data) {
         if (debug) {
             console.log('failed to load vase')
