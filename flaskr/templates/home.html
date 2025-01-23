@@ -34,23 +34,16 @@
     }
   </script>
 
-  <script type="module" src="{{url_for('static',filename= 'vaseGenerator.js')}}">
+  <script type="module" src="{{url_for('static',filename= 'src/vaseGenerator.js')}}">
   </script>
 
   <link href="{{url_for('static',filename= 'style.css')}}" rel="stylesheet">
 
-  <script type="module" src="{{url_for('static',filename= 'main.js')}}">
+  <script type="module" src="{{url_for('static',filename= 'src/main.js')}}">
   </script>
 
-  <script type="module" src="{{url_for('static',filename= 'visualizer.js')}}">
+  <script type="module" src="{{url_for('static',filename= 'src/visualizer.js')}}">
   </script>
-
-  <!--BOOTSTRAP LOCAL-->
-  <!-- 
-  <link href="{{url_for('static',filename= 'bootstrap5.0.3_local.css')}}" rel="stylesheet">
-  <script src="{{url_for('static',filename= 'bootstrap5.0.3_js.js')}}"></script>
-  <script src="{{url_for('static',filename= 'jquery_local.js')}}"></script>
-  -->
 
   <title>Vase Djinn</title>
 </head>
@@ -226,8 +219,8 @@
 <script>
   var default_path = "/static/stl/default.stl";
   var stl_path = default_path;
-  var downArrow = {{ url_for("static", filename = 'caret-down-solid.svg') | tojson}};
-  var upArrow = {{ url_for("static", filename = 'caret-up-solid.svg') | tojson}};
+  var downArrow = {{ url_for("static", filename = 'assets/caret-down-solid.svg') | tojson}};
+  var upArrow = {{ url_for("static", filename = 'assets/caret-up-solid.svg') | tojson}};
 </script>
 
 </html>
