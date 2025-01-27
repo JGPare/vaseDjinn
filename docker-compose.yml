@@ -5,7 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "5001:5000"              # Maps Flask's port 5000 to local port 5001
+      - "5001:5000"          # Maps Flask's port 5000 to local port 5001
     environment:
       FLASK_APP: app.py      # Set environment variable for Flask
     volumes:
@@ -23,6 +23,4 @@ services:
       - type : bind
         source : ./flaskr/static
         target : /vaseDjinn/flaskr/static
-    restart: always
-      #  ./flaskr:/flaskr  # Mount Vite project for live updates
     command: ["npm", "run", "dev", "--", "--host","0.0.0.0", "--port", "5173"]

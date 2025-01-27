@@ -15,22 +15,40 @@ export default class ControlPanelView
 
   setHandles()
   {
-    // button actions 
-    $(document).on("click", '#vaseLoader',(event) => {
+    // get the row from the target, grab the data from it
+    $("#index-container").on('click', (event) => {
+      event.preventDefault()
       event.stopPropagation()
-      event.stopImmediatePropagation()
-      let data = event.target.getAttribute("data")
-      this.controlPanelVM.load(data)
+      const $tr = $(event.target).closest('tr')
+      if ($tr.attr('id') == 'up-arrow-row')
+      {
+        $("#index-table").remove()
+        this.createIndexList(this.controlPanelVM.indexList, -1)
+      }
+      else if ($tr.attr('id') == 'down-arrow-row')
+      {
+        $("#index-table").remove()
+        this.createIndexList(this.controlPanelVM.indexList, 1)
+      }
+      else
+      {
+        const data = $tr.attr('data-load')
+        if (data)
+        {
+          this.controlPanelVM.load(data)
+        }
+      }
     })
 
     $("#load-vase").on("click",(event) => {
       event.preventDefault()
       event.stopPropagation()
-      $("#index-table").remove()
       const access = $("#index-load-access").val()
-      this.controlPanelVM.getIndex(access)
-      $("#myForm").toggle()
-      $("#index-outer-container").toggle()
+      this.controlPanelVM.access = access
+      this.controlPanelVM.getIndex()
+      $("#index-table").remove()
+      $("#myForm").hide()
+      $("#index-outer-container").show()
     })
 
     $("#load-random").on("click",(event) => {
@@ -39,18 +57,19 @@ export default class ControlPanelView
       this.controlPanelVM.loadRandom()
     })
 
-    $(document).on("change", "#index-load-access",(event) => {
+    $("#index-load-access").on('change',(event) => {
       event.stopPropagation()
       $("#index-table").remove()
       const access = $("#index-load-access").val()
-      this.controlPanelVM.getIndex(access)
+      this.controlPanelVM.access = access
+      this.controlPanelVM.getIndex()
     })
 
     $("#edit-vase").on("click",(event) => {
       event.preventDefault()
       event.stopPropagation()
-      $("#index-outer-container").toggle()
-      $("#myForm").toggle()
+      $("#index-outer-container").hide()
+      $("#myForm").show()
     })
 
     $("#delete-vase").on("click",(event) => {
@@ -60,19 +79,7 @@ export default class ControlPanelView
       $("#input-name").val("GregTheVase")
     })
 
-    $(document).on("click", '#down-arrow-button',(event) => {
-      event.stopPropagation()
-      $("#index-table").remove()
-      this.createIndexList(this.controlPanelVM.indexList, 1)
-
-    })
-
-    $(document).on("click", '#up-arrow-button',(event) => {
-      event.stopPropagation()
-      $("#index-table").remove()
-      this.createIndexList(this.controlPanelVM.indexList, -1)
-    })
-
+    // link the number text to the slider
     $(document).on("input", ".form-range",(event) => {
       if (debug) {
           console.log("slider change")
@@ -83,9 +90,13 @@ export default class ControlPanelView
       event.stopPropagation()
     })
 
+    // save button
     $('#myForm').submit( (event) => 
     {
-      this.saveVase(event)
+      event.preventDefault() // Prevent the form from submitting via the browser
+      const data = this.readAllTables()
+      this.controlPanelVM.saveVase(data)
+      $('input[name="height"]').focus()
     })
 
     this.controlPanelVM.on('vaseLoaded',() => 
@@ -97,17 +108,14 @@ export default class ControlPanelView
       else
       {
         this.createTables(this.controlPanelVM.vaseData)
+        this.tablesMade = true
       }
+      this.update()
     })
     
     this.controlPanelVM.on('indexListLoaded',() => 
     {
       this.createIndexList(this.controlPanelVM.indexList)
-    })
-    
-    this.controlPanelVM.on('update',() => 
-    {
-      this.update()
     })
   }
 
@@ -165,31 +173,34 @@ export default class ControlPanelView
     let myRows = []
     let dataType = $("#" + parentID).attr("data")
     let $headers = $("#" + parentID + " > thead td")
-    let $rows = $("#" + parentID + " > tbody tr ").each(function (index) {
-        let $cells = $(this).find("td")
-        myRows[index] = {}
-        $cells.each(function (cellIndex) {
-            const value = ($(this).find("input").val())
+    let $rows = $("#" + parentID + " > tbody tr ").each((rowIndex, rowElement) => {
+        let $cells = $(rowElement).find("td")
+        myRows[rowIndex] = {}
+        $cells.each((cellIndex, cellElement) => {
+            const value = $(cellElement).find("input").val()
             const key = $($headers[cellIndex]).attr("data")
-            myRows[index][key] = value
+            myRows[rowIndex][key] = value
         })
     })
     return dataType, myRows
   }
 
   setTable(parentID, data) {
-    let myRows = []
-    const dataType = $("#" + parentID).attr("data")
-    let $headers = $("#" + parentID + " > thead td")
-    let $rows = $("#" + parentID + " > tbody tr ").each(function (index) {
-        let $cells = $(this).find("td")
-        $cells.each(function (cellIndex) {
-            const key = $($headers[cellIndex]).attr("data")
-            let range = $(this).find("input")
-            range.val(data[index][key])
-            this.setNumberText(range)
-        })
-    })
+    const dataType = $("#" + parentID).attr("data");
+    const $headers = $("#" + parentID + " > thead td");
+    const $rows = $("#" + parentID + " > tbody tr");
+
+    $rows.each((rowIndex, rowElement) => {
+        const $cells = $(rowElement).find("td");
+        
+        $cells.each((cellIndex, cellElement) => {
+            const key = $($headers[cellIndex]).attr("data");
+            const range = $(cellElement).find("input");
+            
+            range.val(data[rowIndex][key]);
+            this.setNumberText(range);
+        });
+    });
   }
 
   createTables(data) {
@@ -403,105 +414,105 @@ export default class ControlPanelView
 
     const indexHeaders = ["Vase Name", "Creator", "Downloads"]
 
-    let table = $("<table>")[0]
-    table.setAttribute("class", "table table-dark table-hover my-dark-table text-center")
-    table.setAttribute("id", "index-table")
-    table.setAttribute("data", "index")
+    let $table = $("<table></table>", {
+      class: "table table-dark table-hover my-dark-table text-center",
+      id: "index-table",
+      data: "index",
+    })
 
+    // Create and populate table header
+    let $header = $("<thead></thead>").appendTo($table)
+    let $headerRow = $("<tr></tr>").appendTo($header)
+
+    indexHeaders.forEach(headerText => {
+      $("<td></td>", {
+        style: "padding: 0.5rem",
+        html: headerText,
+      }).appendTo($headerRow)
+    })
+
+    const $body = $("<tbody></tbody>").appendTo($table)
     let i = 0
+
+    // Add "up-arrow" row if needed
     if (this.startRow > 0) {
-        let row = table.insertRow(0)
-        row.setAttribute("style", "width: 2rem; height: 2rem;")
-        row.setAttribute("id", "up-arrow-row")
+      let $row = $("<tr></tr>", {
+        style: "width: 2rem; height: 2rem;",
+        id: "up-arrow-row",
+      }).appendTo($body)
 
-        let button = $("<a></a>")
-        button.attr("data", "up-button")
-        button.attr("class", "btn text-light h-100 w-100 py-0")
-        button.attr("id", "up-arrow-button")
+      let $button = $("<a></a>", {
+        class: "btn text-light h-100 w-100 py-0",
+      })
 
-        let img = document.createElement("img")
-        img.src = upArrow
-        img.setAttribute("style", "width: 2rem; height: 2rem;")
+      let $img = $("<img>", {
+        src: upArrow,
+        style: "width: 2rem; height: 2rem;",
+      })
 
-        button[0].appendChild(img)
-        row.insertCell(0)
-        row.insertCell(1).appendChild(button[0])
-        row.insertCell(2)
-        i++
+      $button.append($img)
+      $row.append($("<td></td>"), $("<td></td>").append($button), $("<td></td>"))
+      i++
     }
 
     for (; i + this.startRow < endRow && i < this.displayNum; i++) {
+        const rowData = indexList[i + this.startRow];
 
-        let row = table.insertRow(i)
-        let buttonName = $("<a></a>")
-        let buttonUser = $("<a></a>")
-        let buttonDownloads = $("<a></a>")
-        let name = $("<p></p>")
-        let user = $("<p></p>")
-        let downloads = $("<p></p>")
+        let $row = $("<tr></tr>", {
+          'data-load': JSON.stringify(rowData)
+        }).appendTo($body);
 
-        name.attr("class", "text-start mb-0")
-        user.attr("class", "text-end mb-0 text-secondary")
-        downloads.attr("class", "text-end mb-0 text-secondary")
+        let $buttonName = $("<a></a>", {
+            class: "btn d-flex justify-content-center text-light h-100 w-100",
+        }).append($("<p></p>", {
+            class: "text-start mb-0",
+            text: rowData.name,
+        }));
 
-        name.text(indexList[i + this.startRow].name)
-        user.text(indexList[i + this.startRow].user)
-        downloads.text(indexList[i + this.startRow].downloads)
+        let $buttonUser = $("<a></a>", {
+            class: "btn d-flex justify-content-center text-light h-100 w-100",
+        }).append($("<p></p>", {
+            class: "text-end mb-0 text-secondary",
+            text: rowData.user,
+        }));
 
-        buttonName.attr("data", JSON.stringify(indexList[i + this.startRow]))
-        buttonUser.attr("data", JSON.stringify(indexList[i + this.startRow]))
-        buttonDownloads.attr("data", JSON.stringify(indexList[i + this.startRow]))
+        let $buttonDownloads = $("<a></a>", {
+            class: "btn d-flex justify-content-center text-light h-100 w-100",
+        }).append($("<p></p>", {
+            class: "text-end mb-0 text-secondary",
+            text: rowData.downloads,            
+        }));
 
-        name.attr("data", JSON.stringify(indexList[i + this.startRow]))
-        user.attr("data", JSON.stringify(indexList[i + this.startRow]))
-
-        buttonName.attr("class", "btn vaseLoader d-flex justify-content-center text-light h-100 w-100")
-        buttonName.attr("id", "vaseLoader")
-        buttonUser.attr("class", "btn vaseLoader d-flex justify-content-center text-light h-100 w-100")
-        buttonUser.attr("id", "vaseLoader")
-        buttonDownloads.attr("class", "btn vaseLoader d-flex justify-content-center text-light h-100 w-100")
-        buttonDownloads.attr("id", "vaseLoader")
-
-        buttonName.append(name)
-        buttonUser.append(user)
-        buttonDownloads.append(downloads)
-
-        row.insertCell(0).appendChild(buttonName[0])
-        row.insertCell(1).appendChild(buttonUser[0])
-        row.insertCell(2).appendChild(buttonDownloads[0])
-
+        // Append buttons to table row
+        $row.append(
+            $("<td></td>").append($buttonName),
+            $("<td></td>").append($buttonUser),
+            $("<td></td>").append($buttonDownloads)
+        );
     };
 
+    // Add "down-arrow" row if needed
     if (endRow != indexList.length) {
-        let row = table.insertRow(i)
-        row.setAttribute("style", "width: 2rem; height: 2rem;")
+      let $row = $("<tr></tr>", {
+        style: "width: 2rem; height: 2rem;",
+        id: "down-arrow-row"
+      }).appendTo($body)
 
-        let button = $("<a></a>")
-        button.attr("data", "down-button")
-        button.attr("class", "btn text-light h-100 w-100 py-0")
-        button.attr("id", "down-arrow-button")
+      let $button = $("<a></a>", {
+        class: "btn text-light h-100 w-100 py-0",
+      })
 
-        let img = document.createElement("img")
-        img.src = downArrow
-        img.setAttribute("style", "width: 2rem; height: 2rem;")
+      let $img = $("<img>", {
+        src: downArrow,
+        style: "width: 2rem; height: 2rem;",
+      })
 
-        button[0].appendChild(img)
+      $button.append($img)
+      $row.append($("<td></td>"), $("<td></td>").append($button), $("<td></td>"))
+    }
 
-        row.insertCell(0)
-        row.insertCell(1).appendChild(button[0])
-        row.insertCell(2)
-    };
-
-    let header = table.createTHead()
-    let headerRow = header.insertRow(0)
-
-    for (let i = 0; i < indexHeaders.length; i++) {
-        let headElem = document.createElement("td")
-        headElem.innerHTML = indexHeaders[i]
-        headElem.setAttribute("style", "padding: 0.5rem")
-        headerRow.appendChild(headElem)
-    };
-    $("#index-container")[0].appendChild(table)
+    // Append the table to the container
+    $("#index-container").empty().append($table);
   }
 
   update() {

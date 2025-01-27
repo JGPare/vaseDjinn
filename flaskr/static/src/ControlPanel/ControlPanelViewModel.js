@@ -13,6 +13,7 @@ export default class ControlPanelViewModel extends EventEmitter
     this.settings = null
     this.vaseData = null
     this.appearance = null
+    this.access = 'public'
 
     // index table
     this.indexList = []
@@ -54,7 +55,6 @@ export default class ControlPanelViewModel extends EventEmitter
         this.vaseData["name"] = JSON.parse(inputData).name
         this.username = JSON.parse(inputData).user
         this.trigger('vaseLoaded')
-        this.trigger('update')
     }).fail( (data) => {
         if (debug) {
             console.log('failed to load vase')
@@ -76,8 +76,6 @@ export default class ControlPanelViewModel extends EventEmitter
             console.log('loaded settings')
         }
         this.settings = JSON.parse(data)
-        console.log(this.settings);
-        
         this.loadDefault()
     }).fail( (data) => {
         if (debug) {
@@ -103,7 +101,6 @@ export default class ControlPanelViewModel extends EventEmitter
         let [vaseData, appearance, downloads] = JSON.parse(data)
         this.vaseData = JSON.parse(vaseData)
         this.trigger('vaseLoaded')
-        this.trigger('update')
     }).fail( (data) => {
         if (debug) {
             console.log('failed to load default')
@@ -111,7 +108,30 @@ export default class ControlPanelViewModel extends EventEmitter
     })
   }
 
-  getIndex(access) {
+  saveVase(data)
+  {
+    if (debug) {
+        console.log('save attempt attempt')
+    }
+    data["appearance"] = this.visualizer.getApperance()
+    $.ajax({
+        type: "POST",
+        url: "saveVase",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        data: JSON.stringify(data),
+    }).done(function (data) {
+        if (debug) {
+            console.log('vase saved')
+        }
+    }).fail(function (data) {
+        if (debug) {
+            console.log("Save attempt failed.")
+        }
+    })
+  }
+
+  getIndex() {
     if (debug) {
         console.log('load index attempt')
     }
@@ -120,11 +140,10 @@ export default class ControlPanelViewModel extends EventEmitter
         url: "getIndex",
         contentType: "application/json; charset=utf-8",
         traditional: true,
-        data: JSON.stringify(access),
+        data: JSON.stringify(this.access),
     }).done((data) => {
         if (debug) {
             console.log('indexes got')
-            console.log(data)
         }
         this.indexList = JSON.parse(data)
         this.trigger('indexListLoaded')

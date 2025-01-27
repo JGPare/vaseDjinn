@@ -1,20 +1,27 @@
 
 ## Docker 
-To build the docker image use the command below. The ```-t``` option allows you to name the image.
+
+This project uses docker compose. During development, compose is used to create two continers, one for the flask dev server and one for a node dev server. The node dev server is used to hot reload files. During production, vite is used to bundle the frontend and only a gunicorn flask server is run. 
+
+## Development
+
+You will need docker installed. With docker running, navigate to the root directory of the project `(~./vaseDjinn)` and run the command
 
 ```
-docker build -t vase-djinn .
+docker compose up
 ```
 
-### Building with a Volume
-
-You can build with a volume to sync your code during developments, so changes are reflected right away in your app running in a docker container. Do not do this in production. The  ```sh ```  options opens and runs a terminal in the container. Note that the port mapping maps local port 5001 to container port 5000. Port 5000 is used by airdrop on newer macbooks.
+This should start both services. Exit with `cmd + c` in the terminal. It is then best practice to use 
 
 ```
-docker run -dp 5001:5000 -w /app -v "$(pwd):/app" vase-djinn sh -c "python app.py"
+docker-compose down --rmi all --volumes
 ```
 
-In production we use this instead to build our image:
+This will remove all images and associated volumes, leaving a clean slate for next time. All changes on the flask side and all changes in the `static` directory on the node side should hot reload, so you should only need to do this occasionally.
+
+## Production
+
+In production we won't need the node server, as we will be using the bundled build created by vite. We will therfore use this instead to build our image:
 
 ```
 docker run -dp 5000:5000 image-name

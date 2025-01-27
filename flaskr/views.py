@@ -1,6 +1,6 @@
 import json
 
-from flask import render_template, flash, request, Blueprint
+from flask import render_template, flash, request, Blueprint, current_app
 from flask_login import current_user
 
 from flaskr import db, vite_manifest
@@ -32,7 +32,8 @@ def home():
         flash("Vases can be exported for printing from the right panel")
         flash("Sliders can be adjusted with arrow keys")
         flash("Log in to save vases, press load to see public vases")
-    return render_template('home.html', main_js=get_vite_asset("src/main.js"))
+    print(current_app.config["DEVELOPMENT"], flush=True)
+    return render_template('home.html', main_js=get_vite_asset("src/main.js"), dev=current_app.config["DEVELOPMENT"])
 
 @home_bp.route('/saveVase', methods=['GET', 'POST'])
 def save():

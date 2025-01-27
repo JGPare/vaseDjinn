@@ -12,11 +12,5 @@ export default defineConfig({
       }
     },
     manifest: true,
-  },
-  server: {
-    host: '0.0.0.0', // Allow connections from outside the container
-    watch: {
-      usePolling: true, // Needed for changes to be detected inside Docker
-    },
-  },
+  }
 });

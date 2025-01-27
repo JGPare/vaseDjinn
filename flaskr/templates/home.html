@@ -23,13 +23,15 @@
     crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-3.7.0.min.js" crossorigin="anonymous"></script>
 
-  <!-- For development use this! allows for quick updates -->
-  <script type="module" src="http://localhost:5173/@vite/client"></script>
-  <script type="module" src="http://localhost:5173/src/main.js"></script>
+  <!-- For development this allows for quick updates, the dev variable is set from the .env file -->
+  {% if dev %}
+    <script type="module" src="http://localhost:5173/@vite/client"></script>
+    <script type="module" src="http://localhost:5173/src/main.js"></script>
+  {% else %}
+    <script type="module" src="static/dist/{{ main_js }}"></script>
+  {% endif %}
 
   <link href="{{url_for('static',filename= 'style.css')}}" rel="stylesheet">
-  
-  <!-- <script type="module" src="static/dist/{{ main_js }}"></script> -->
 
   <title>Vase Djinn</title>
 </head>
@@ -114,17 +116,6 @@
                 </table>
               </div>
 
-              <!-- <div class="container-fluid table-container p-2 pb-2 my-2">
-            <div class="row">
-              <div class="col-2 name-label-container" >
-                <label for="input-name" class="text-light pt-4 ps-2 h-100">name</label>
-              </div>
-              <div class="col-9">
-                <input type="text" name="name" class="form-control dark-input" id="input-name" placeholder="name" value="GregTheVase">
-              </div>
-            </div>
-         </div> -->
-
               <!-- HEIGHT WIDTH THICKNESS TABLE -->
               <div class="container-fluid table-container my-2 mt-3" id="generic0-container"></div>
               <!-- STEPS AND SLOPE TABLE -->
@@ -144,7 +135,7 @@
                   {% else %}
                   <div class="col-4">
                     <input type="submit" class="btn my-button w-100 disabled" role="button" id="save-vase" value="save"
-                      form="myForm" title="Updates current model">
+                      form="myForm" title="Login to save vases">
                   </div>
                   {% endif %}
                   <div class="col-4">

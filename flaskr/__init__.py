@@ -17,8 +17,6 @@ login_manager = LoginManager()
 mail = Mail()
 
 vite_manifest = None
-# Load the Vite manifest
-print("CWD",os.listdir())
 with open('flaskr/static/dist/.vite/manifest.json') as f:
     vite_manifest = json.load(f)
 
@@ -31,6 +29,7 @@ def create_app(app_config=None):
     # Often people will also separate these into a separate config.py file 
     app.config['SECRET_KEY'] = os.getenv("SECRET_KEY")
     app.config["PREFERRED_URL_SCHEME"] = "https"
+    app.config["DEVELOPMENT"] = os.getenv("DEVELOPMENT") == '1'
 
 ###############################################################################
 ############################### DATABASE SETUPS ###############################

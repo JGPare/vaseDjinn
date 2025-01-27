@@ -31,10 +31,10 @@ export default class Visualizer {
 
     this.renderClock = new THREE.Clock()
     this.scale = 0.02
-    let params = null
-    let previousVaseColor = this.vaseColor
+    this.previousVaseColor = this.vaseColor
     this.currentVase = null
     this.vaseColor = 0x560bad
+    this.camera = null
 
     // used by GUI top right
     this.params = {
@@ -52,6 +52,10 @@ export default class Visualizer {
 
   init() {
 
+    const gui = new GUI()
+    const sceneFolder = gui.addFolder('Model')
+    const exportFolder = gui.addFolder('Export')
+
     this.container = document.getElementById('mycanvas')
 
     this.WIDTH = this.container.offsetWidth
@@ -60,15 +64,15 @@ export default class Visualizer {
     // Scene
 
     this.scene = new THREE.Scene()
-    this.scene.background = new THREE.Color(0x697879)
-    this.scene.fog = new THREE.Fog(0x697879, 8, 15)
+    this.scene.background = new THREE.Color(0x596869)
+    this.scene.fog = new THREE.Fog(0x596869, 8, 15)
 
     // Ground
 
     this.ground = new THREE.Mesh(
       new THREE.PlaneGeometry(2000, 2000),
       new THREE.MeshPhongMaterial({
-        color: 0x596869,
+        color: 0x363946,
         depthWrite: false
       }))
 
@@ -96,11 +100,12 @@ export default class Visualizer {
     // this.scene.add( axesHelper );
 
     // Lights
-    this.scene.add(new THREE.HemisphereLight(0x8d7c7c, 0x494966))
+    this.scene.add(new THREE.HemisphereLight(0x8d7c7c, 0x494966, 3))
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.5))
 
-    this.addShadowedLight(1, 1, 1, 0xffffff, 1)
-    this.addShadowedLight(0, 1, 1, 0xffffff, 1)
-    this.addShadowedLight(1, 1, 0, 0xffffff, 1)
+    this.addShadowedLight(1, 1, 1, 0xffffff, 2)
+    this.addShadowedLight(0, 1, 1, 0x90e0ef, 2)
+    this.addShadowedLight(1, 1, 0, 0xf72585, 2)
 
     // Renderer
 
@@ -126,13 +131,10 @@ export default class Visualizer {
 
     // Resize listener 
 
-    window.addEventListener('resize', this.onWindowResize)
+    window.addEventListener('resize', () => 
+      this.onWindowResize())
 
     // GUI
-
-    const gui = new GUI()
-    const sceneFolder = gui.addFolder('Model')
-    const exportFolder = gui.addFolder('Export')
 
     sceneFolder.add(this.params, 'rotationSpeed', 0, 1.0, 0.01).onFinishChange(
       function (newRotationSpeed) {
@@ -238,8 +240,6 @@ export default class Visualizer {
   
     this.WIDTH = this.container.offsetWidth
     this.HEIGHT = window.innerHeight
-  
-    console.log(this.camera);
     
     this.camera.aspect = this.WIDTH / this.HEIGHT
     this.camera.updateProjectionMatrix()
