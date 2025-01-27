@@ -1,0 +1,28 @@
+version: "3.8"
+services:
+  flask:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5000"              # Maps Flask's port 5000 to local port 5001
+    environment:
+      FLASK_APP: app.py      # Set environment variable for Flask
+    volumes:
+      - .:/vaseDjinn         # Mount local code to the container for live updates
+    command: "python app.py"
+
+  vite:
+    build:
+      context: .
+      dockerfile: Dockerfile.vite
+    working_dir: /vaseDjinn/flaskr
+    ports:
+      - "5173:5173"          # Maps Vite's dev server to localhost:5173
+    volumes:
+      - type : bind
+        source : ./flaskr/static
+        target : /vaseDjinn/flaskr/static
+    restart: always
+      #  ./flaskr:/flaskr  # Mount Vite project for live updates
+    command: ["npm", "run", "dev", "--", "--host","0.0.0.0", "--port", "5173"]

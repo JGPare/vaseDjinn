@@ -1,0 +1,9 @@
+FROM node:20-slim
+
+WORKDIR /vaseDjinn/flaskr
+COPY /flaskr/package.json ./
+RUN npm install
+COPY flaskr .
+EXPOSE 5173
+
+CMD ["npm", "run", "dev", "--", "--host"]

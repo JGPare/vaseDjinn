@@ -3,7 +3,7 @@ import json
 from flask import render_template, flash, request, Blueprint
 from flask_login import current_user
 
-from flaskr import db
+from flaskr import db, vite_manifest
 from flaskr.models import User,Vase
 
 from .settings import default_vase, settings
@@ -16,6 +16,15 @@ import os
 
 home_bp = Blueprint('home', __name__,template_folder='templates')
 
+"""
+Helper function to retrieve the hashed asset file path from the manifest.
+"""
+def get_vite_asset(file_name):
+    try:
+        return vite_manifest[file_name]["file"]
+    except KeyError:
+        raise RuntimeError(f"Asset '{file_name}' not found in Vite manifest.")
+
 @home_bp.route('/', methods=['GET', 'POST'])
 def home():
     # replace with tutorial button???
@@ -23,7 +32,7 @@ def home():
         flash("Vases can be exported for printing from the right panel")
         flash("Sliders can be adjusted with arrow keys")
         flash("Log in to save vases, press load to see public vases")
-    return render_template('home.html')
+    return render_template('home.html', main_js=get_vite_asset("src/main.js"))
 
 @home_bp.route('/saveVase', methods=['GET', 'POST'])
 def save():

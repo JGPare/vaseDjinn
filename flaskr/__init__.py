@@ -1,4 +1,5 @@
 import os
+import json
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -14,6 +15,12 @@ from flask_mail import Mail
 db = SQLAlchemy()
 login_manager = LoginManager()
 mail = Mail()
+
+vite_manifest = None
+# Load the Vite manifest
+print("CWD",os.listdir())
+with open('flaskr/static/dist/.vite/manifest.json') as f:
+    vite_manifest = json.load(f)
 
 # this is the "app factory"
 def create_app(app_config=None):
