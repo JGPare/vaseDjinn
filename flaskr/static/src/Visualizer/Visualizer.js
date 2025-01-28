@@ -9,6 +9,7 @@ import { GUI } from 'three/addons/libs/lil-gui.module.min.js'
 
 import Experience from '../Experience.js'
 import VaseGenerator from './VaseGenerator.js'
+import Sizes from '../Utility/Sizes.js'
 
 // aliased
 const VG = VaseGenerator
@@ -26,15 +27,17 @@ let link = null
 export default class Visualizer {
   constructor() {
     this.experience = new Experience()
-    this.controlPanelVM = null
+    this.controlPanelVM = this.experience.controlPanelVM
     instance = this
 
+    this.currentVase = null
     this.renderClock = new THREE.Clock()
     this.scale = 0.02
-    this.previousVaseColor = this.vaseColor
     this.currentVase = null
-    this.vaseColor = 0x560bad
     this.camera = null
+    
+    this.vaseColor = 0x560bad
+    this.gridColor = 0x363946
 
     // used by GUI top right
     this.params = {
@@ -72,7 +75,7 @@ export default class Visualizer {
     this.ground = new THREE.Mesh(
       new THREE.PlaneGeometry(2000, 2000),
       new THREE.MeshPhongMaterial({
-        color: 0x363946,
+        color: this.gridColor,
         depthWrite: false
       }))
 
@@ -159,11 +162,6 @@ export default class Visualizer {
   setApperance(color) {
     this.vaseColor = Number(color)
     this.updateColor(this.vaseColor)
-  }
-
-  transistionApperance(color) {
-    this.previousVaseColor = this.vaseColor
-    this.vaseColor = Number(color)
   }
 
   getApperance() {

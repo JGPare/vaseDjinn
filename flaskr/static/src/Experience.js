@@ -14,8 +14,12 @@ export default class Experience
       return instance
     }
     instance = this
+
     this.controlPanelVM = new ControlPanelViewModel()
-    this.visualizer = new Visualizer()
+
+    const canvas = document.getElementById('mycanvas')
+    this.visualizer = new Visualizer(canvas)
+
     this.controlPanel = new ControlPanelView(this.controlPanelVM)
 
     this.loaded()
@@ -23,7 +27,6 @@ export default class Experience
 
   loaded()
   {
-    this.visualizer.controlPanelVM = this.controlPanelVM
     this.controlPanelVM.onLoad()
   }
 

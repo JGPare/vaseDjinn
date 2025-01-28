@@ -1,4 +1,4 @@
-import Vase from "./Vase"
+import VaseModel from "./Models/VaseModel"
 import * as THREE from 'three'
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js'
 
@@ -38,7 +38,7 @@ export default class VaseGenerator
         vertical.phase = parseFloat(vertical.phase) / 100
     })
     params.verticals = verticals
-    return new Vase(params)
+    return new VaseModel(params)
   }
   
   static generateGeometry(vase) {
@@ -253,7 +253,7 @@ export default class VaseGenerator
         radials: radials,
         verticals: verticals,
     }
-    return new Vase(params)
+    return new VaseModel(params)
   }
 
 }
