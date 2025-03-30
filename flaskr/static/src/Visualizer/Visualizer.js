@@ -267,6 +267,7 @@ export default class Visualizer {
   function exportASCII() {
     const vaseMesh = instance.vaseMesh
     const tempMesh = new THREE.Mesh(vaseMesh.geometry, vaseMesh.material)
+    const scale = instance.scale
     tempMesh.scale.set(1 / scale, 1 / scale, 1 / scale)
   
     tempMesh.geometry.rotateX(Math.PI / 2)
