@@ -10,7 +10,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -162,3 +161,5 @@ cython_debug/
 
 # don't share the scripts 
 *scripts/*
+
+*node_modules*
