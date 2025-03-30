@@ -290,7 +290,6 @@ export default class Visualizer {
     tempMesh.geometry.rotateX(-Math.PI / 2)
   
     saveArrayBuffer(result, $("#input-name").val() + '.stl')
-  
   }
   
   link = document.createElement('a')
