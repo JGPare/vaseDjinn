@@ -79,7 +79,7 @@ settings = {
         "step" : 1,
         },
     "radial_twist" : {
-        "min" : 0,
+        "min" : -80,
         "max" : 80,
         "step" : 1,
         },
