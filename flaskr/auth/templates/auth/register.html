@@ -54,11 +54,16 @@
             <div class="pt-3">
             {{ form.submit(class="btn my-button fs-5 w-100") }}
             </div>
+
+            <div class="form-floating pt-5">
+              {{ form.not_a_robot(style="visibility : hidden;", id="floatingNotARobot",placeholder="notARobot",required=False) }}
+           </div>
           </form>
 
         </div>
       </div>
     </div>
+
   </div>
 
 
